@@ -27,7 +27,7 @@ namespace TetrisGame.game {
             Color[] pixels = new Color[texture.Width * texture.Height];
             texture.GetData(pixels);
             for (int i = 0; i < pixels.Length; i++ ) {
-                if(pixels[i] == something)
+                if(pixels[i] == something else)
             }
         }
     }

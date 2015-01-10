@@ -10,16 +10,10 @@ using System.Threading.Tasks;
 namespace TetrisGame {
     class GameObjects {
 
-        public static Dictionary<Color, Texture2D> textures;
         public static Color fromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
-
+        public static Texture2D baseTexture;
         public static void Init(ContentManager content) {
-            textures = new Dictionary<Color, Texture2D>();
-
-            Texture2D tex = content.Load<Texture2D>("Block");
-
-            textures.Add(Color.Aqua, PrepareBlockTexture(tex, Color.Wheat));
-
+            baseTexture = content.Load<Texture2D>("Block");
         }
 
         public static Texture2D PrepareBlockTexture(Texture2D texture, Color color) {
@@ -43,10 +37,8 @@ namespace TetrisGame {
 
         public static int size = 20;
 
-        private Color color;
-
-        public int X { set; get; }
-        public int Y { set; get; }
+        public int X { private set; get; }
+        public int Y { private set; get; }
 
         public Block() {
         }
@@ -56,49 +48,110 @@ namespace TetrisGame {
             this.Y = y;
         }
 
-        public void move(int offX, int offY) {
+        public void Move(int offX, int offY) {
             this.X += offX;
             this.Y += offY;
         }
     }
 
+    public class Shape {
+        public List<Block> blockList;
+        public Color color;
+
+        public Shape(Color color, params Block[] blocks) {
+            
+            blockList = new List<Block>();
+
+            foreach(Block block in blocks) {
+                blockList.Add(block);
+            }
+            this.color = color;
+        }
+
+        public IEnumerator<Block> GetBottomBlocks() {
+            foreach (Block block in blockList) {
+                bool ok = true;
+                foreach (Block blockBelow in blockList) {
+                    if (blockBelow.X == block.X && blockBelow.Y == block.Y - Block.size)
+                        ok = false;
+                }
+                if (ok)
+                    yield return block;
+            }
+        }
+
+        public void Move(int offX, int offY) {
+            foreach(Block block in blockList) {
+                block.Move(offX, offY);
+            }
+        }
+
+        public void Draw(SpriteBatch batch) {
+            Texture2D tex;
+            foreach (Block block in blockList) {
+                batch.Draw(GameObjects.PrepareBlockTexture(GameObjects.baseTexture, color), new Rectangle(block.X, block.Y, Block.size, Block.size), Color.White);
+            }
+        }
+    }
+
     public class Board {
 
-        private List<Block> blocks;
-        private Block movingBlock;
-        int sizeX, sizeY;
+        private List<Shape> shapes;
+        private Shape movingShape;
+        private int posX, posY;
+        private int sizeX, sizeY;
 
-        public Board(int sizeX, int sizeY) {
-            this.sizeX = sizeX;
-            this.sizeY = sizeY;
-            blocks = new List<Block>();
+        public Board(int posX, int posY, int rows, int columns) {
+            this.sizeX = columns * Block.size;
+            this.sizeY = rows* Block.size;
+            this.posX = posX;
+            this.posY = posY;
+            shapes = new List<Shape>();
         }
 
-        public void addBlock(Block block) {
-            this.movingBlock = block;
+        public void AddShape(Shape shape) {
+            this.movingShape = shape;
         }
 
-        public void update() {
-            if (movingBlock != null) {
-                if (getBlock(movingBlock.X, movingBlock.Y + Block.size + 1) == null) {
-                    movingBlock.move(0, 1);
+        public void Update() {
+            if (movingShape != null) {
+                if (!IsShapeObstructed(movingShape)) {
+                    movingShape.Move(0, 1);
                 } else {
-                    blocks.Add(movingBlock);
-                    movingBlock = null;
+                    shapes.Add(movingShape);
+                    movingShape = null;
                 }
             }
         }
 
-        public void draw(SpriteBatch batch) {
-            
+        public void Draw(SpriteBatch batch) {
+            foreach (Shape shape in shapes) {
+                shape.Draw(batch);
+            }
+            if(movingShape != null)
+                movingShape.Draw(batch);
         }
 
-        public Block getBlock(int x, int y) {
-            foreach (Block block in blocks) {
-                if (x > block.X && x < block.X + Block.size && y > block.Y && y < block.Y + Block.size)
-                    return block;
+        public bool IsBlockObstructed(Block b) {
+            if (b.Y + Block.size + 1 > posY + sizeY)
+                return true;
+            foreach (Shape shape in shapes) {
+                foreach (Block block in shape.blockList) {
+                    if(b.X >= block.X && b.X <= block.X + Block.size && b.Y + Block.size + 1 >= block.Y && b.Y + Block.size + 1 <= block.Y + Block.size) {
+                        return true;
+                    }
+                }
             }
-            return null;
+            return false;
+        }
+
+        public bool IsShapeObstructed(Shape shape) {
+            IEnumerator<Block> bottom = shape.GetBottomBlocks();
+            while(bottom.MoveNext()) {
+                if(IsBlockObstructed(bottom.Current))
+                    return true;
+            }
+            return false;
         }
 
 

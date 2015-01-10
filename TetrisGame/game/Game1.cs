@@ -12,6 +12,8 @@ namespace TetrisGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Board board1;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -27,7 +29,8 @@ namespace TetrisGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            board1 = new Board(0, 0, 20, 8);
+            board1.AddShape(new Shape(Color.Red, new Block(50, 0), new Block(70, 0)));
             base.Initialize();
         }
 
@@ -61,7 +64,7 @@ namespace TetrisGame
         {
             // TODO: Add your update logic here
 
-
+            board1.Update();
 
             base.Update(gameTime);
         }
@@ -77,12 +80,9 @@ namespace TetrisGame
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
-            GameObjects.Update(spriteBatch);
-
-            foreach (Texture2D tex in GameObjects.textures.Values) {
-                Console.Out.WriteLine("Trying to draw.");
-                spriteBatch.Draw(tex, new Rectangle(100, 100, tex.Width, tex.Height), Color.White);
-            }
+            //GameObjects.Update(spriteBatch);
+            board1.Draw(spriteBatch);
+            
 
             spriteBatch.End();
 

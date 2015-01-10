@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace TetrisGame
 {
@@ -38,7 +39,7 @@ namespace TetrisGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Content.Load
+            GameObjects.Init(Content);
             // TODO: use this.Content to load your game content here
         }
 
@@ -60,6 +61,8 @@ namespace TetrisGame
         {
             // TODO: Add your update logic here
 
+
+
             base.Update(gameTime);
         }
 
@@ -72,6 +75,16 @@ namespace TetrisGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+
+            GameObjects.Update(spriteBatch);
+
+            foreach (Texture2D tex in GameObjects.textures.Values) {
+                Console.Out.WriteLine("Trying to draw.");
+                spriteBatch.Draw(tex, new Rectangle(100, 100, tex.Width, tex.Height), Color.White);
+            }
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

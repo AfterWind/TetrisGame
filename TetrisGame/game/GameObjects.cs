@@ -12,11 +12,15 @@ namespace TetrisGame {
 
         public static Color fromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
         public static Texture2D baseTexture;
+        public static Board board1=new Board(0, 0, 8, 20);
+        public static ContentManager content;
         public static void Init(ContentManager content) {
-            baseTexture = content.Load<Texture2D>("Block");
+            GameObjects.content = content;
+            GameObjects.board1.AddShape(GetRandomShape());
         }
 
-        public static Texture2D PrepareBlockTexture(Texture2D texture, Color color) {
+        public static Texture2D PrepareBlockTexture(Color color) {
+            Texture2D texture = content.Load<Texture2D>("Block");
             Color[] pixels = new Color[texture.Width * texture.Height];
             texture.GetData(pixels);
             for (int i = 0; i < pixels.Length; i++) {
@@ -24,15 +28,46 @@ namespace TetrisGame {
                     pixels[i] = color;
                 }
             }
-            texture.SetData(pixels);
-            return texture;
+            Texture2D tex = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
+            tex.SetData(pixels);
+            return tex;
         }
 
         public static void Update(SpriteBatch batch) {
 
         }
 
+        public static Color[] colors = new Color[] {
+            Color.Red, Color.Green, Color.Yellow, Color.Blue, Color.Black
+        };
 
+        public static Pattern[] patterns = new Pattern[] {
+            new Pattern(board1.PosX + board1.SizeX / 2, board1.PosY + 10, 1, 0, -1, 0, 0, 1, -1, -1, 1, -1)
+        };
+
+        public static Random random = new Random();
+        public static Color GetRandomColor() {
+            return colors[random.Next(0, colors.Length)];
+        }
+
+        public static Shape GetRandomShape() {
+            Random random = new Random();
+            Pattern pattern = patterns[random.Next(0, patterns.Length)];
+            Color color = GetRandomColor();
+            Console.Out.WriteLine("Got color: " + color.ToString());
+            return new Shape(GetRandomColor(), pattern.centerX, pattern.centerY, pattern.rest);
+        }
+    }
+
+    public class Pattern {
+        public int centerX, centerY;
+        public int[] rest;
+
+        public Pattern(int centerX, int centerY, params int[] rest) {
+            this.centerX = centerX;
+            this.centerY = centerY;
+            this.rest = rest;
+        }
     }
 
     public class Block {
@@ -55,7 +90,7 @@ namespace TetrisGame {
         }
 
         public void Draw(SpriteBatch batch) {
-            batch.Draw(GameObjects.PrepareBlockTexture(GameObjects.baseTexture, color), new Rectangle(X, Y, size, size), Color.White);
+            batch.Draw(GameObjects.PrepareBlockTexture(color), new Rectangle(X, Y, size, size), Color.White);
         }
     }
 
@@ -102,14 +137,17 @@ namespace TetrisGame {
 
         private List<Block> blocks;
         private Shape movingShape;
-        private int posX, posY;
-        private int sizeX, sizeY;
+        
+        public int SizeX {private set; get;}
+        public int SizeY {private set; get;}
+        public int PosX {private set; get; }
+        public int PosY {private set; get;}
 
         public Board(int posX, int posY, int columns, int rows) {
-            this.sizeX = columns * Block.size;
-            this.sizeY = rows * Block.size;
-            this.posX = posX;
-            this.posY = posY;
+            this.SizeX = columns * Block.size;
+            this.SizeY = rows * Block.size;
+            this.PosX = posX;
+            this.PosY = posY;
             blocks = new List<Block>();
         }
 
@@ -120,12 +158,14 @@ namespace TetrisGame {
         public void Update() {
             if (movingShape != null) {
                 if (!IsShapeObstructed(movingShape)) {
-                    movingShape.Move(0, 1);
+                    movingShape.Move(0, 5);
                 } else {
                     foreach (Block block in movingShape.blockList)
                         blocks.Add(block);
                     movingShape = null;
                 }
+            } else {
+                AddShape(GameObjects.GetRandomShape());
             }
         }
 
@@ -138,14 +178,13 @@ namespace TetrisGame {
         }
 
         public bool IsBlockObstructed(Block b) {
-            if (b.Y + Block.size + 1 > posY + sizeY)
+            if (b.Y + Block.size + 1 > PosY + SizeY)
                 return true;
             foreach (Block block in blocks) {
                 if (b.X >= block.X && b.X <= block.X + Block.size && b.Y + Block.size + 1 >= block.Y && b.Y + Block.size + 1 <= block.Y + Block.size) {
                     return true;
                 }
             }
-
             return false;
         }
 

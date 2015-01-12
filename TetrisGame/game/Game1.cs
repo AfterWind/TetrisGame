@@ -14,8 +14,6 @@ namespace TetrisGame
 
         
 
-        Board board1;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -31,8 +29,6 @@ namespace TetrisGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            board1 = new Board(0, 0, 8, 20);
-            board1.AddShape(new Shape(Color.Red, 80, 100, 0, -1, 0, 1, 1, 0, -1, 0));
             base.Initialize();
         }
 
@@ -66,7 +62,7 @@ namespace TetrisGame
         {
             // TODO: Add your update logic here
 
-            board1.Update();
+            GameObjects.board1.Update();
 
             base.Update(gameTime);
         }
@@ -77,13 +73,13 @@ namespace TetrisGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Pink);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
             //GameObjects.Update(spriteBatch);
-            board1.Draw(spriteBatch);
+            GameObjects.board1.Draw(spriteBatch);
             
 
             spriteBatch.End();

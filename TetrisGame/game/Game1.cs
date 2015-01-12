@@ -12,6 +12,8 @@ namespace TetrisGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        
+
         Board board1;
 
         public Game1()
@@ -29,8 +31,8 @@ namespace TetrisGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            board1 = new Board(0, 0, 20, 8);
-            board1.AddShape(new Shape(Color.Red, new Block(50, 0), new Block(70, 0)));
+            board1 = new Board(0, 0, 8, 20);
+            board1.AddShape(new Shape(Color.Red, 80, 100, 0, -1, 0, 1, 1, 0, -1, 0));
             base.Initialize();
         }
 

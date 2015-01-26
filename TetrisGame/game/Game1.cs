@@ -1,21 +1,19 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 
-namespace TetrisGame
-{
+namespace TetrisGame {
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Game
-    {
+    public class Game1 : Game {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        
 
-        public Game1()
-        {
+
+        public Game1() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -26,8 +24,7 @@ namespace TetrisGame
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
-        protected override void Initialize()
-        {
+        protected override void Initialize() {
             // TODO: Add your initialization logic here
             base.Initialize();
         }
@@ -36,8 +33,7 @@ namespace TetrisGame
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
-        protected override void LoadContent()
-        {
+        protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameObjects.Init(Content);
@@ -48,8 +44,7 @@ namespace TetrisGame
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
         /// </summary>
-        protected override void UnloadContent()
-        {
+        protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
         }
 
@@ -58,11 +53,39 @@ namespace TetrisGame
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
+        bool moved = false;
+        protected override void Update(GameTime gameTime) {
             // TODO: Add your update logic here
 
             GameObjects.board1.Update();
+            if (GameObjects.board1.hasLost)
+                this.Exit();
+            KeyboardState state = Keyboard.GetState();
+            if (state.GetPressedKeys().Length > 0) {
+                foreach (Keys k in state.GetPressedKeys()) {
+                    if (!moved) {
+                        if (k == Keys.Right) {
+                            GameObjects.board1.MoveShape(Block.size);
+                            moved = true;
+                        } else if (k == Keys.Left) {
+                            GameObjects.board1.MoveShape(-Block.size);
+                            moved = true;
+                        } else {
+                            moved = false;
+                        }
+                    }
+                    if (k == Keys.Escape) {
+                        this.Exit();
+                    } else if(k == Keys.P){
+
+                        GameObjects.board1.PrintMap();
+
+                    }
+                }
+            } else {
+                moved = false;
+            }
+
 
             base.Update(gameTime);
         }
@@ -71,16 +94,15 @@ namespace TetrisGame
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Pink);
+        protected override void Draw(GameTime gameTime) {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
             //GameObjects.Update(spriteBatch);
             GameObjects.board1.Draw(spriteBatch);
-            
+
 
             spriteBatch.End();
 

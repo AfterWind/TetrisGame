@@ -12,7 +12,7 @@ namespace TetrisGame {
 
         public static Color fromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
         public static Texture2D baseTexture;
-        public static Board board1=new Board(0, 0, 8, 20);
+        public static Board board1=new Board(0, 0, 16, 20);
         public static ContentManager content;
         public static void Init(ContentManager content) {
             GameObjects.content = content;
@@ -158,7 +158,7 @@ namespace TetrisGame {
 
                 }
                 if (blockCheck != null) {
-                    block.Move(board.blockArray[(newX - board.PosX) / Block.size, block.GetRelativeY()].X - block.X, 0);
+                    block.Move(board.blockArray[(newX - board.PosX) / Block.size, block.GetRelativeY()].X - block.X - Block.size, 0);
                     ok = false;
                 }
             }
@@ -179,7 +179,7 @@ namespace TetrisGame {
                 if (newY < board.PosY)
                     ok = false;
                 if (newY + Block.size > board.PosY + board.SizeY) {
-                    block.Move(0, board.PosY + board.SizeY - newY - Block.size);
+                    block.Move(0, board.PosY + board.SizeY - block.Y - Block.size);
                     ok = false;
                 }
                 Block blockCheck = null;
@@ -189,7 +189,7 @@ namespace TetrisGame {
 
                 }
                 if (blockCheck != null) {
-                    //block.Move(0, board.blockArray[block.GetRelativeX(), (newY - board.PosY) / Block.size].Y - block.Y);
+                    block.Move(0, board.blockArray[block.GetRelativeX(), (newY - board.PosY) / Block.size].Y - block.Y - Block.size);
                     ok = false;
                 }
             }

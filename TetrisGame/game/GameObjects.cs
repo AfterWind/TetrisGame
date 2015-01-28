@@ -12,7 +12,7 @@ namespace TetrisGame {
     class GameObjects {
 
         public static Color fromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
-        public static Board board1=new Board(0, 0, 16, 20);
+        public static Board board1=new Board(20, 20, 16, 20);
         public static ContentManager content;
         public static void Init(ContentManager content) {
             GameObjects.content = content;

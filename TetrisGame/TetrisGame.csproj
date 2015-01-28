@@ -45,8 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="game\Block.cs" />
+    <Compile Include="game\Board.cs" />
     <Compile Include="game\Game1.cs" />
     <Compile Include="game\GameObjects.cs" />
+    <Compile Include="game\Shape.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

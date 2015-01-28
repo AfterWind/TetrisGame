@@ -95,7 +95,7 @@ namespace TetrisGame.game {
 
         public void Update() {
             if (movingShape != null) {
-                if (movingShape.MoveY(Speed)) {
+                if (movingShape.MoveCheckY(Speed)) {
 
                 } else {
                     foreach (Block block in movingShape.blockList) {
@@ -117,7 +117,7 @@ namespace TetrisGame.game {
 
         public void MoveShape(int offsetX) {
             if (movingShape != null) {
-                movingShape.MoveX(offsetX);
+                movingShape.MoveCheckX(offsetX);
             }
         }
 

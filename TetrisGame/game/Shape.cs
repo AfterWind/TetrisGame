@@ -34,66 +34,61 @@ namespace TetrisGame.game {
             }
         }
 
-        public bool MoveX(int offX) {
-            bool ok = true;
+        private void Move(int offX, int offY) {
+            foreach (Block block in blockList) {
+                block.Move(offX, offY);
+            }
+        }
 
+        public bool MoveCheckX(int offX) {
             foreach (Block block in blockList) {
                 int newX = block.X + offX;
-                if (newX < board.PosX)
-                    ok = false;
+                if (newX < board.PosX) {
+                    Move(board.PosX - block.X, 0);
+                    return false;
+                }
                 if (newX + Block.size > board.PosX + board.SizeX) {
-                    //block.Move(board.PosX + board.SizeX - newX - Block.size, 0);
-                    ok = false;
+                    Move(board.PosX + board.SizeX - block.X - Block.size, 0);
+                    return false;
                 }
                 Block blockCheck = null;
                 try {
-                    blockCheck = board.blockArray[(newX - board.PosX) / Block.size, block.GetRelativeY()];
-                } catch (IndexOutOfRangeException ex) {
-
-                }
+                    blockCheck = board.blockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
+                } catch (IndexOutOfRangeException) {}
                 if (blockCheck != null) {
-                    block.Move(board.blockArray[(newX - board.PosX) / Block.size, block.GetRelativeY()].X - block.X - Block.size, 0);
-                    ok = false;
+                    Move(blockCheck.X - block.X - Math.Sign(offX) * Block.size, 0);
+                    return false;
                 }
             }
-            if (!ok)
-                return false;
 
-            foreach (Block block in blockList) {
-                block.Move(offX, 0);
-            }
+            Move(offX, 0);
 
             return true;
         }
 
-        public bool MoveY(int offY) {
+        public bool MoveCheckY(int offY) {
             foreach (Block block in blockList) {
                 int newY = block.Y + offY;
                 if (newY < board.PosY)
                     return false;
                 if (newY + Block.size > board.PosY + board.SizeY) {
-                    MoveY(board.PosY + board.SizeY - block.Y - Block.size);
+                    Move(0, board.PosY + board.SizeY - block.Y - Block.size);
                     return false;
                 }
-                //Console.WriteLine(Math.Ceiling((double)offY / (double)Block.size));
                 Block blockCheck = null;
                 for (int i = 1; i <= Math.Ceiling((double)offY / (double)Block.size) && blockCheck == null; i++) {
                     try {
                         blockCheck = board.blockArray[block.GetRelativeX(), block.GetRelativeY() + i];
-                    } catch (IndexOutOfRangeException ex) {
-                        
-                    }
+                    } catch (IndexOutOfRangeException) {}
                 }
 
                 if (blockCheck != null) {
-                    MoveY(blockCheck.Y - block.Y - Block.size);
+                    Move(0, blockCheck.Y - block.Y - Block.size);
                     return false;
                 }
             }
 
-            foreach (Block block in blockList) {
-                block.Move(0, offY);
-            }
+            Move(0, offY);
 
             return true;
         }

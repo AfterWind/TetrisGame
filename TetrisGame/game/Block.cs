@@ -15,15 +15,15 @@ namespace TetrisGame.game {
         public Color color { private set; get; }
         public Board board;
 
-        public int X { private set; get; }
-        public int Y { private set; get; }
+        public int X { set; get; }
+        public int Y { set; get; }
 
         public int GetRelativeX() {
-            return (X - board.PosX) / Block.size;
+            return (int)Math.Floor((double)((X - board.PosX) / Block.size));
         }
 
         public int GetRelativeY() {
-            return (Y - board.PosY) / Block.size;
+            return (int)Math.Floor((double)((Y - board.PosY) / Block.size));
         }
 
         public Block(Board board, Color color, int x, int y) {

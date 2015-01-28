@@ -67,28 +67,29 @@ namespace TetrisGame.game {
         }
 
         public bool MoveY(int offY) {
-            bool ok = true;
             foreach (Block block in blockList) {
                 int newY = block.Y + offY;
                 if (newY < board.PosY)
-                    ok = false;
+                    return false;
                 if (newY + Block.size > board.PosY + board.SizeY) {
-                    block.Move(0, board.PosY + board.SizeY - block.Y - Block.size);
-                    ok = false;
+                    MoveY(board.PosY + board.SizeY - block.Y - Block.size);
+                    return false;
                 }
+                //Console.WriteLine(Math.Ceiling((double)offY / (double)Block.size));
                 Block blockCheck = null;
-                try {
-                    blockCheck = board.blockArray[block.GetRelativeX(), (newY - board.PosY) / Block.size];
-                } catch (IndexOutOfRangeException ex) {
-
+                for (int i = 1; i <= Math.Ceiling((double)offY / (double)Block.size) && blockCheck == null; i++) {
+                    try {
+                        blockCheck = board.blockArray[block.GetRelativeX(), block.GetRelativeY() + i];
+                    } catch (IndexOutOfRangeException ex) {
+                        
+                    }
                 }
+
                 if (blockCheck != null) {
-                    block.Move(0, board.blockArray[block.GetRelativeX(), (newY - board.PosY) / Block.size].Y - block.Y - Block.size);
-                    ok = false;
+                    MoveY(blockCheck.Y - block.Y - Block.size);
+                    return false;
                 }
             }
-            if (!ok)
-                return false;
 
             foreach (Block block in blockList) {
                 block.Move(0, offY);

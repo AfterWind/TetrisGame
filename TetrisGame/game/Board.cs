@@ -36,25 +36,6 @@ namespace TetrisGame.game {
             this.movingShape = shape;
         }
 
-        public void Update() {
-            if (movingShape != null) {
-                if (movingShape.MoveY(Speed)) {
-
-                } else {
-                    foreach (Block block in movingShape.blockList) {
-                        blockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
-                    }
-                    movingShape = null;
-                }
-            } else {
-                AddShape(GameObjects.GetRandomShape());
-            }
-            for (int i = 0; i < blockArray.GetLength(0); i++) {
-                if (blockArray[i, 0] != null)
-                    hasLost = true;
-            }
-        }
-
         public void PrintMap() {
             Console.Out.WriteLine("Printing Map: ");
             for (int j = 0; j < blockArray.Length / blockArray.GetLength(0); j++) {
@@ -72,11 +53,6 @@ namespace TetrisGame.game {
             // Draw the borders
             /*
              * TODO: Experiment with this more, so that it works more efficiently
-             * 
-            
-            
-
-            
             short[] indices = new short[4];
             VertexPositionColor[] points = new VertexPositionColor[4];
 
@@ -91,7 +67,9 @@ namespace TetrisGame.game {
             
             device.DrawUserIndexedPrimitives<VertexPositionColor> (PrimitiveType.LineList, points, 0, 4, indices, 0, 3);
             */
-            
+
+
+            // Draw the borders less efficient
             Texture2D Pixel = new Texture2D(device, 1, 1);
             Pixel.SetData(new Color[] { BORDER_COLOR });
             batch.Begin();
@@ -113,6 +91,28 @@ namespace TetrisGame.game {
             if (movingShape != null)
                 movingShape.Draw(batch);
             batch.End();    
+        }
+
+        public void Update() {
+            if (movingShape != null) {
+                if (movingShape.MoveY(Speed)) {
+
+                } else {
+                    foreach (Block block in movingShape.blockList) {
+                        blockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
+                        block.X = block.GetRelativeX() * Block.size + PosX;
+                        block.Y = block.GetRelativeY() * Block.size + PosY;
+                        Console.WriteLine("Saved a block to location: " + block.GetRelativeX() + ", " + block.GetRelativeY());
+                    }
+                    movingShape = null;
+                }
+            } else {
+                AddShape(GameObjects.GetRandomShape());
+            }
+            for (int i = 0; i < blockArray.GetLength(0); i++) {
+                if (blockArray[i, 0] != null)
+                    hasLost = true;
+            }
         }
 
         public void MoveShape(int offsetX) {

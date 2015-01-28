@@ -66,8 +66,10 @@ namespace TetrisGame {
             // TODO: Add your update logic here
 
             GameObjects.board1.Update();
-            if (GameObjects.board1.hasLost)
-                this.Exit();
+            if (GameObjects.board1.hasLost) {
+                GameObjects.board1.ResetMap();
+                GameObjects.board1.hasLost = false;
+            }
             GetInput();
             base.Update(gameTime);
         }
@@ -85,17 +87,18 @@ namespace TetrisGame {
             if (currentState.GetPressedKeys().Length > 0) {
                 foreach (Keys k in currentState.GetPressedKeys()) {
                     switch (k) {
-
                         case Keys.Escape:
                             this.Exit();
                             break;
-                        case Keys.P:
+                        case Keys.D:
                             GameObjects.board1.PrintMap();
                             break;
                         case Keys.R:
                             GameObjects.board1.ResetMap();
                             break;
-
+                        case Keys.P:
+                            GameObjects.board1.SetSpeed(0);
+                            break;
                     }
                     if (!WasKeyPressed(k)) {
                         switch (k) {

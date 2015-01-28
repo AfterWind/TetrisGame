@@ -11,6 +11,7 @@ namespace TetrisGame.game {
 
         public static int size = 20;
 
+        public Texture2D texture;
         public Color color { private set; get; }
         public Board board;
 
@@ -28,7 +29,7 @@ namespace TetrisGame.game {
         public Block(Board board, Color color, int x, int y) {
             this.X = x;
             this.Y = y;
-            this.color = color;
+            this.texture = GameObjects.PrepareBlockTexture(color);
             this.board = board;
         }
 
@@ -38,7 +39,7 @@ namespace TetrisGame.game {
         }
 
         public void Draw(SpriteBatch batch) {
-            batch.Draw(GameObjects.PrepareBlockTexture(color), new Rectangle(X, Y, size, size), Color.White);
+            batch.Draw(texture, new Rectangle(X, Y, size, size), Color.White);
         }
     }
 

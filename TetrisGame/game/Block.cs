@@ -29,6 +29,7 @@ namespace TetrisGame.game {
         public Block(Board board, Color color, int x, int y) {
             this.X = x;
             this.Y = y;
+            this.color = color;
             this.texture = GameObjects.PrepareBlockTexture(color);
             this.board = board;
         }

@@ -12,13 +12,16 @@ namespace TetrisGame.game {
         public Block center;
         public Board board;
 
-        public Shape(Board board, Color color, int centerX, int centerY, params int[] adjacent) {
+        public Shape(Shape other) : this(other.board, other.center.color, new Point(other.center.X, other.center.Y), GetDifferentialParams(other.blockList, other.center)) { }
+        public Shape(Board board, Color color, params int[] adjacent) : this(board, color, GetDefaultCenter(board, adjacent), adjacent) {}
+        
+        public Shape(Board board, Color color, Point centerPoint, params int[] adjacent) {
             this.board = board;
             blockList = new List<Block>();
-            center = new Block(board, color, centerX, centerY);
+            center = new Block(board, color, centerPoint.X, centerPoint.Y);
             blockList.Add(center);
             for (int i = 0; i < adjacent.Length; i += 2) {
-                blockList.Add(new Block(board, color, centerX + adjacent[i] * Block.size, centerY + adjacent[i + 1] * Block.size));
+                blockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.size, centerPoint.Y + adjacent[i + 1] * Block.size));
             }
         }
 
@@ -109,6 +112,29 @@ namespace TetrisGame.game {
             return true;
         }
 
+        public static int[] GetDifferentialParams(List<Block> blocks, Block center) {
+            int[] array = new int[(blocks.Count - 1) * 2];
+            int i = 0;
+            foreach (Block block in blocks) {
+                if (block != center) {
+                    array[i++] = (block.X - center.X) / Block.size;
+                    array[i++] = (block.Y - center.Y) / Block.size;
+                }
+            }
+            return array;
+        }
+
+        public static Point GetDefaultCenter(Board board, params int[] adjacent) {
+            int minY = 0;
+            for (int i = 1; i < adjacent.Length; i += 2) {
+                if (minY > adjacent[i])
+                    minY = adjacent[i];
+            }
+            return new Point(board.PosX + board.SizeX / 2, minY * (-1) * Block.size + board.PosY);
+        }
+
+        
+
         public void RotateLeft() {
 
             Point[] rotatedCoordinates = new Point[blockList.Count];
@@ -175,22 +201,6 @@ namespace TetrisGame.game {
             foreach (Block block in blockList) {
                 block.Draw(batch);
             }
-        }
-    }
-
-    public class Pattern {
-        public int centerX, centerY;
-        public int[] rest;
-
-        public Pattern(params int[] rest) {
-            this.centerX = GameObjects.board1.PosX + GameObjects.board1.SizeX / 2;
-            int minY = 0;
-            for (int i = 1; i < rest.Length; i += 2) {
-                if (minY > rest[i])
-                    minY = rest[i];
-            }
-            this.centerY = minY * (-1) * Block.size + GameObjects.board1.PosY;
-            this.rest = rest;
         }
     }
 

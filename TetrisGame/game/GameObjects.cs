@@ -12,11 +12,29 @@ namespace TetrisGame {
     class GameObjects {
 
         public static Color fromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
-        public static Board board1=new Board(20, 20, 16, 20);
+        public static Board board1;
+        public static Board GetBoard() {
+            if(board1 == null)
+                board1 = new Board(20, 20, 16, 20);
+            return board1;
+        }
+
         public static ContentManager content;
         public static void Init(ContentManager content) {
             GameObjects.content = content;
-            GameObjects.board1.AddShape(GetRandomShape());
+            patterns = new Shape[] {
+            new Shape(GetBoard(), GetRandomColor(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
+            new Shape(GetBoard(), GetRandomColor(), 0, 1, 0, 2, 0, 3),
+            new Shape(GetBoard(), GetRandomColor(), 1, 0, -1, 0, 0, 1, 0, -1),
+            new Shape(GetBoard(), GetRandomColor(), 1, 0, -1, 0, 0, -1),
+            new Shape(GetBoard(), GetRandomColor(), 1, 0, 0, -1, 1, -1),
+            };
+            
+            
+            GameObjects.GetBoard().AddShape(GetRandomShape());
+
+            
+
         }
 
         public static Texture2D PrepareBlockTexture(Color color) {
@@ -41,24 +59,15 @@ namespace TetrisGame {
             Color.Red, Color.Green, Color.Yellow, Color.Blue, Color.Black
         };
 
-        public static Pattern[] patterns = new Pattern[] {
-            new Pattern(1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
-            new Pattern(0, 1, 0, 2, 0, 3),
-            new Pattern(1, 0, -1, 0, 0, 1, 0, -1),
-            new Pattern(1, 0, -1, 0, 0, -1),
-            new Pattern(1, 0, 0, -1, 1, -1),
-        };
-
         public static Random random = new Random();
         public static Color GetRandomColor() {
-            return colors[random.Next(0, colors.Length)];
+            return colors[random.Next(colors.Length)];
         }
 
+        public static Shape[] patterns;
+
         public static Shape GetRandomShape() {
-            Random random = new Random();
-            Pattern pattern = patterns[random.Next(0, patterns.Length)];
-            Color color = GetRandomColor();
-            return new Shape(GameObjects.board1, GetRandomColor(), pattern.centerX, pattern.centerY, pattern.rest);
+            return new Shape(patterns[random.Next(patterns.Length)]);
         }
     }
 

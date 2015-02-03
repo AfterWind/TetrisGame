@@ -99,6 +99,7 @@ namespace TetrisGame.game {
 
                 } else {
                     foreach (Block block in movingShape.blockList) {
+                        Console.WriteLine(block.GetRelativeX() + ", " + block.GetRelativeY());
                         blockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
                         block.X = block.GetRelativeX() * Block.size + PosX;
                         block.Y = block.GetRelativeY() * Block.size + PosY;

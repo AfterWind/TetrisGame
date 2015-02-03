@@ -128,5 +128,10 @@ namespace TetrisGame.game {
         public void SetSpeed(int newSpeed) {
             this.Speed = newSpeed;
         }
+
+        public void RotateShape() {
+            if (movingShape != null)
+                movingShape.Rotate();
+        }
     }
 }

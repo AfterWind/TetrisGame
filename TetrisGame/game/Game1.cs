@@ -116,6 +116,9 @@ namespace TetrisGame {
                             case Keys.Left:
                                 GameObjects.board1.MoveShape(-Block.size);
                                 break;
+                            case Keys.Space:
+                                GameObjects.board1.RotateShape();
+                                break;
                         }
                     }
                 }

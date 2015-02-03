@@ -54,7 +54,7 @@ namespace TetrisGame.game {
                 Block blockCheck = null;
                 try {
                     blockCheck = board.blockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
-                } catch (IndexOutOfRangeException) {}
+                } catch (IndexOutOfRangeException) { }
                 if (blockCheck != null) {
                     Move(blockCheck.X - block.X - Math.Sign(offX) * Block.size, 0);
                     return false;
@@ -79,7 +79,7 @@ namespace TetrisGame.game {
                 for (int i = 1; i <= Math.Ceiling((double)offY / (double)Block.size) && blockCheck == null; i++) {
                     try {
                         blockCheck = board.blockArray[block.GetRelativeX(), block.GetRelativeY() + i];
-                    } catch (IndexOutOfRangeException) {}
+                    } catch (IndexOutOfRangeException) { }
                 }
 
                 if (blockCheck != null) {
@@ -87,10 +87,88 @@ namespace TetrisGame.game {
                     return false;
                 }
             }
-
             Move(0, offY);
-
             return true;
+        }
+
+        public bool IsPositionValid(int x, int y) {
+            if (x < board.PosX)
+                return false;
+            if (x + Block.size > board.PosX + board.SizeX)
+                return false;
+            if (y < board.PosY)
+                return false;
+            if (y + Block.size > board.PosY + board.SizeY)
+                return false;
+            Block blockCheck = null;
+            try {
+                blockCheck = board.blockArray[(x - board.PosX) / Block.size, (y - board.PosY) / Block.size];
+            } catch (IndexOutOfRangeException) { }
+            if (blockCheck != null)
+                return false;
+            return true;
+        }
+
+        public void RotateLeft() {
+
+            Point[] rotatedCoordinates = new Point[blockList.Count];
+            int i = 0; // Is used outside of the for loop
+            for (; i < blockList.Count; i++ ) {
+
+                Point rotatedPoint;
+                Point translationCoordinate = new Point(blockList[i].X - center.X, blockList[i].Y - center.Y);
+
+                translationCoordinate.Y *= -1;
+
+                rotatedPoint = new Point(translationCoordinate.X, translationCoordinate.Y);
+
+                rotatedPoint.X = (int)Math.Round(translationCoordinate.X * Math.Cos(Math.PI / 2) - translationCoordinate.Y * Math.Sin(Math.PI / 2));
+                rotatedPoint.Y = (int)Math.Round(translationCoordinate.X * Math.Sin(Math.PI / 2) + translationCoordinate.Y * Math.Cos(Math.PI / 2));
+
+                rotatedPoint.Y *= -1;
+
+                rotatedPoint.X += center.X;
+                rotatedPoint.Y += center.Y;
+                
+                if (IsPositionValid(rotatedPoint.X, rotatedPoint.Y)) {
+                    rotatedCoordinates[i] = new Point(rotatedPoint.X, rotatedPoint.Y);
+                } else {
+                    break;
+                }   
+            }
+            // Check if for loop escaped at the proper time
+            if (i >= blockList.Count) {
+                for (i = 0; i < blockList.Count; i++) {
+                    blockList[i].X = rotatedCoordinates[i].X;
+                    blockList[i].Y = rotatedCoordinates[i].Y;
+                }
+            }
+        }
+
+        public void Rotate() {
+            RotateLeft();
+            /*
+            foreach (Block block in blockList) {
+                if (block == center)
+                    continue;
+                int diffX = block.GetRelativeX() - center.GetRelativeX();
+                int diffY = block.GetRelativeY() - center.GetRelativeY();
+
+                if (diffX <= 0 && diffY <= 0) {
+                    block.X = center.X - Block.size * diffY;
+                    block.Y = center.Y + Block.size * diffX;
+                } else if (diffX >= 0 && diffY <= 0) {
+                    block.X = center.X - Block.size * diffY;
+                    block.Y = center.Y + Block.size * diffX;
+                } else if (diffX >= 0 && diffY >= 0) {
+                    block.X = center.X + Block.size * diffY;
+                    block.Y = center.Y + Block.size * diffX;
+                } else {
+                    block.X = center.X - Block.size * diffY;
+                    block.Y = center.Y + Block.size * diffX;
+                }
+            }
+             * */
         }
 
         public void Draw(SpriteBatch batch) {

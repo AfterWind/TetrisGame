@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public class Shape {
-        private Board board1;
-        private Point point;
-        private int[] p;
-
         public List<Block> blockList { private set; get; }
         public Block center { private set; get; }
         public Board board { private set; get; }
         public bool isSymmetrical { private set; get; }
 
         public Shape(Shape other) : this(other.board, Utils.GetRandomColor(), new Point(other.center.X, other.center.Y), Utils.GetDifferentialParams(other.blockList, other.center)) { }
-        public Shape(Board board, params int[] adjacent) : this(board, Utils.GetRandomColor(), Utils.GetDefaultCenter(board, adjacent), adjacent) {}
+        public Shape(Board board, params int[] adjacent) : this(board, Utils.GetRandomColor(), Utils.GetDefaultCenter(board, adjacent), adjacent) { }
         public Shape(Board board, Color color, Point centerPoint, params int[] adjacent) {
             this.board = board;
             this.blockList = new List<Block>();
@@ -26,7 +22,7 @@ namespace TetrisGame.game {
 
             blockList.Add(center);
             for (int i = 0; i < adjacent.Length; i += 2) {
-                blockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.size, centerPoint.Y + adjacent[i + 1] * Block.size));
+                blockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.Size, centerPoint.Y + adjacent[i + 1] * Block.Size));
             }
 
             this.isSymmetrical = Utils.IsSymmetrical(blockList);
@@ -36,7 +32,7 @@ namespace TetrisGame.game {
             foreach (Block block in blockList) {
                 bool ok = true;
                 foreach (Block blockBelow in blockList) {
-                    if (blockBelow.X == block.X && blockBelow.Y == block.Y - Block.size)
+                    if (blockBelow.X == block.X && blockBelow.Y == block.Y - Block.Size)
                         ok = false;
                 }
                 if (ok)
@@ -57,16 +53,16 @@ namespace TetrisGame.game {
                     Move(board.PosX - block.X, 0);
                     return false;
                 }
-                if (newX + Block.size > board.PosX + board.SizeX) {
-                    Move(board.PosX + board.SizeX - block.X - Block.size, 0);
+                if (newX + Block.Size > board.PosX + board.SizeX) {
+                    Move(board.PosX + board.SizeX - block.X - Block.Size, 0);
                     return false;
                 }
                 Block blockCheck = null;
                 try {
-                    blockCheck = board.blockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
+                    blockCheck = board.BlockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
                 } catch (IndexOutOfRangeException) { }
                 if (blockCheck != null) {
-                    Move(blockCheck.X - block.X - Math.Sign(offX) * Block.size, 0);
+                    Move(blockCheck.X - block.X - Math.Sign(offX) * Block.Size, 0);
                     return false;
                 }
             }
@@ -81,19 +77,19 @@ namespace TetrisGame.game {
                 int newY = block.Y + offY;
                 if (newY < board.PosY)
                     return false;
-                if (newY + Block.size > board.PosY + board.SizeY) {
-                    Move(0, board.PosY + board.SizeY - block.Y - Block.size);
+                if (newY + Block.Size > board.PosY + board.SizeY) {
+                    Move(0, board.PosY + board.SizeY - block.Y - Block.Size);
                     return false;
                 }
                 Block blockCheck = null;
-                for (int i = 1; i <= Math.Ceiling((double)offY / (double)Block.size) && blockCheck == null; i++) {
+                for (int i = 1; i <= Math.Ceiling((double)offY / (double)Block.Size) && blockCheck == null; i++) {
                     try {
-                        blockCheck = board.blockArray[block.GetRelativeX(), block.GetRelativeY() + i];
+                        blockCheck = board.BlockArray[block.GetRelativeX(), block.GetRelativeY() + i];
                     } catch (IndexOutOfRangeException) { }
                 }
 
                 if (blockCheck != null) {
-                    Move(0, blockCheck.Y - block.Y - Block.size);
+                    Move(0, blockCheck.Y - block.Y - Block.Size);
                     return false;
                 }
             }

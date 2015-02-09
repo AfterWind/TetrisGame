@@ -9,29 +9,29 @@ using System.Threading.Tasks;
 namespace TetrisGame.game {
     public class Block {
 
-        public static int size = 20;
+        public static readonly int Size = 20;
 
-        public Texture2D texture;
-        public Color color { private set; get; }
-        public Board board;
-
+        public Texture2D Texture { private set; get; }
+        public Board Board { private set; get; }
         public int X { set; get; }
         public int Y { set; get; }
 
+        private Color Color;
+
         public int GetRelativeX() {
-            return (int)Math.Floor((double)((X - board.PosX) / Block.size));
+            return (int)Math.Floor((double)((X - Board.PosX) / Block.Size));
         }
 
         public int GetRelativeY() {
-            return (int)Math.Floor((double)((Y - board.PosY) / Block.size));
+            return (int)Math.Floor((double)((Y - Board.PosY) / Block.Size));
         }
 
         public Block(Board board, Color color, int x, int y) {
             this.X = x;
             this.Y = y;
-            this.color = color;
-            this.texture = GameObjects.PrepareBlockTexture(color);
-            this.board = board;
+            this.Color = color;
+            this.Texture = Utils.PrepareBlockTexture(color);
+            this.Board = board;
         }
 
         public void Move(int offX, int offY) {
@@ -40,7 +40,7 @@ namespace TetrisGame.game {
         }
 
         public void Draw(SpriteBatch batch) {
-            batch.Draw(texture, new Rectangle(X, Y, size, size), Color.White);
+            batch.Draw(Texture, new Rectangle(X, Y, Size, Size), Color.White);
         }
     }
 

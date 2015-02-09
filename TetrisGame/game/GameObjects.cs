@@ -11,41 +11,21 @@ using TetrisGame.game;
 namespace TetrisGame {
     class GameObjects {
 
-        public static Color fromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
+        public static Color FromColor { private set; get; }
+        public static ContentManager Content { private set; get; }
+
+        // TODO: Allow multiple boards.
         private static Board board1;
         public static Board GetBoard() {
             if(board1 == null)
                 board1 = new Board(20, 20, 16, 20);
             return board1;
         }
-
-        public static ContentManager content;
+        
         public static void Init(ContentManager content) {
-            GameObjects.content = content;
-            Utils.patterns = new Shape[] {
-            //new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
-            new Shape(GetBoard(), 0, 1, 0, 2, 0, 3),
-            //new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
-            //new Shape(GetBoard(), 1, 0, -1, 0, 0, -1),
-            //new Shape(GetBoard(), 1, 0, 0, -1, 1, -1),
-            //new Shape(GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
-            };
-            
+            Content = content;
+            FromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
             GameObjects.GetBoard().AddShape(Utils.GetRandomShape());
-        }
-
-        public static Texture2D PrepareBlockTexture(Color color) {
-            Texture2D texture = content.Load<Texture2D>("Block");
-            Color[] pixels = new Color[texture.Width * texture.Height];
-            texture.GetData(pixels);
-            for (int i = 0; i < pixels.Length; i++) {
-                if (pixels[i] == fromColor) {
-                    pixels[i] = color;
-                }
-            }
-            Texture2D tex = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
-            tex.SetData(pixels);
-            return tex;
         }
 
         public static void Update(SpriteBatch batch) {

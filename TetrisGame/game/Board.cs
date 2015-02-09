@@ -8,25 +8,23 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public class Board {
-        
-        private static int BORDER_SIZE = 5;
-        private static Color BORDER_COLOR = Color.Black;
-
-        public Block[,] blockArray;
-        private Shape movingShape;
-
-        public bool hasLost = false;
-
         public int SizeX { private set; get; }
         public int SizeY { private set; get; }
         public int PosX { private set; get; }
         public int PosY { private set; get; }
         public int Speed { private set; get; }
+        public Block[,] BlockArray { private set; get; }
+        public bool HasLost { private set; get; }
+
+        private static readonly int BORDER_SIZE = 5;
+        private static readonly Color BORDER_COLOR = Color.Black;
+
+        private Shape movingShape;
 
         public Board(int posX, int posY, int columns, int rows) {
-            blockArray = new Block[columns, rows];
-            this.SizeX = columns * Block.size;
-            this.SizeY = rows * Block.size;
+            BlockArray = new Block[columns, rows];
+            this.SizeX = columns * Block.Size;
+            this.SizeY = rows * Block.Size;
             this.PosX = posX;
             this.PosY = posY;
             this.Speed = 3;
@@ -71,7 +69,7 @@ namespace TetrisGame.game {
 
             batch.Begin();
             // Draw all the blocks
-            foreach (Block block in blockArray) {
+            foreach (Block block in BlockArray) {
                 if (block != null) {
                     block.Draw(batch);
                 }
@@ -93,9 +91,9 @@ namespace TetrisGame.game {
 
                 } else {
                     foreach (Block block in movingShape.blockList) {
-                        blockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
-                        block.X = block.GetRelativeX() * Block.size + PosX;
-                        block.Y = block.GetRelativeY() * Block.size + PosY;
+                        BlockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
+                        block.X = block.GetRelativeX() * Block.Size + PosX;
+                        block.Y = block.GetRelativeY() * Block.Size + PosY;
                     }
                     movingShape = null;
                 }
@@ -104,18 +102,18 @@ namespace TetrisGame.game {
             }
 
             // Verify if there are blocks in the first row, if so player loses
-            for (i = 0; i < blockArray.GetLength(0); i++) {
-                if (blockArray[i, 0] != null)
-                    hasLost = true;
+            for (i = 0; i < BlockArray.GetLength(0); i++) {
+                if (BlockArray[i, 0] != null)
+                    HasLost = true;
             }
 
             // Verify if a row has been filled
-            for (j = 0; j < blockArray.Length / blockArray.GetLength(0); j++) {
-                for (i = 0; i < blockArray.GetLength(0); i++) {
-                    if (blockArray[i, j] == null)
+            for (j = 0; j < BlockArray.Length / BlockArray.GetLength(0); j++) {
+                for (i = 0; i < BlockArray.GetLength(0); i++) {
+                    if (BlockArray[i, j] == null)
                         break;
                 }
-                if (i >= blockArray.GetLength(0)) {
+                if (i >= BlockArray.GetLength(0)) {
                     RemoveRow(j);
                 }
             }
@@ -134,17 +132,17 @@ namespace TetrisGame.game {
 
         public void RemoveRow(int row) {
             for (int j = row; j >= 0; j--) {
-                for (int i = 0; i < blockArray.GetLength(0); i++) {
+                for (int i = 0; i < BlockArray.GetLength(0); i++) {
                     if (row == j) {
                         // TODO: Implement a block deleting method
-                        blockArray[i, j] = null;
+                        BlockArray[i, j] = null;
 
-                    } else if (blockArray[i, j] != null) {
+                    } else if (BlockArray[i, j] != null) {
                         
                         // TODO: Better block movement
-                        blockArray[i, j].Move(0, Block.size);
-                        blockArray[i, j + 1] = blockArray[i, j];
-                        blockArray[i, j] = null;
+                        BlockArray[i, j].Move(0, Block.Size);
+                        BlockArray[i, j + 1] = BlockArray[i, j];
+                        BlockArray[i, j] = null;
                     }
                 }
             }
@@ -153,7 +151,8 @@ namespace TetrisGame.game {
         
         
         public void ResetMap() {
-            blockArray = new Block[SizeX / Block.size, SizeY / Block.size];
+            BlockArray = new Block[SizeX / Block.Size, SizeY / Block.Size];
+            HasLost = false;
         }
 
         public void SetSpeed(int newSpeed) {
@@ -162,9 +161,9 @@ namespace TetrisGame.game {
 
         public void PrintMap() {
             Console.Out.WriteLine("Printing Map: ");
-            for (int j = 0; j < blockArray.Length / blockArray.GetLength(0); j++) {
-                for (int i = 0; i < blockArray.GetLength(0); i++) {
-                    if (blockArray[i, j] != null)
+            for (int j = 0; j < BlockArray.Length / BlockArray.GetLength(0); j++) {
+                for (int i = 0; i < BlockArray.GetLength(0); i++) {
+                    if (BlockArray[i, j] != null)
                         Console.Out.Write("1 ");
                     else
                         Console.Out.Write("0 ");

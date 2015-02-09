@@ -9,10 +9,10 @@ namespace TetrisGame {
     /// This is the main type for your game
     /// </summary>
     public class Game1 : Game {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-
-
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private BasicEffect basicEffect;
+        private KeyboardState oldState;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -35,9 +35,6 @@ namespace TetrisGame {
         /// all of your content.
         /// </summary>
         /// 
-
-        BasicEffect basicEffect;
-
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -59,16 +56,13 @@ namespace TetrisGame {
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        bool moved = false;
-        KeyboardState oldState;
-
+       
         protected override void Update(GameTime gameTime) {
             // TODO: Add your update logic here
 
             GameObjects.GetBoard().Update();
-            if (GameObjects.GetBoard().hasLost) {
+            if (GameObjects.GetBoard().HasLost) {
                 GameObjects.GetBoard().ResetMap();
-                GameObjects.GetBoard().hasLost = false;
             }
             GetInput();
             base.Update(gameTime);
@@ -111,10 +105,10 @@ namespace TetrisGame {
                                 GameObjects.GetBoard().SetSpeed(GameObjects.GetBoard().Speed + 2);
                                 break;
                             case Keys.Right:
-                                GameObjects.GetBoard().MoveShape(Block.size);
+                                GameObjects.GetBoard().MoveShape(Block.Size);
                                 break;
                             case Keys.Left:
-                                GameObjects.GetBoard().MoveShape(-Block.size);
+                                GameObjects.GetBoard().MoveShape(-Block.Size);
                                 break;
                             case Keys.Space:
                                 GameObjects.GetBoard().RotateShape();

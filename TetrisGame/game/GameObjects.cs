@@ -12,7 +12,7 @@ namespace TetrisGame {
     class GameObjects {
 
         public static Color fromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
-        public static Board board1;
+        private static Board board1;
         public static Board GetBoard() {
             if(board1 == null)
                 board1 = new Board(20, 20, 16, 20);
@@ -23,12 +23,12 @@ namespace TetrisGame {
         public static void Init(ContentManager content) {
             GameObjects.content = content;
             Utils.patterns = new Shape[] {
-            new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
+            //new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
             new Shape(GetBoard(), 0, 1, 0, 2, 0, 3),
-            new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
-            new Shape(GetBoard(), 1, 0, -1, 0, 0, -1),
-            new Shape(GetBoard(), 1, 0, 0, -1, 1, -1),
-            new Shape(GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
+            //new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
+            //new Shape(GetBoard(), 1, 0, -1, 0, 0, -1),
+            //new Shape(GetBoard(), 1, 0, 0, -1, 1, -1),
+            //new Shape(GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
             };
             
             GameObjects.GetBoard().AddShape(Utils.GetRandomShape());

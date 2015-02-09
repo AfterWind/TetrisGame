@@ -65,10 +65,10 @@ namespace TetrisGame {
         protected override void Update(GameTime gameTime) {
             // TODO: Add your update logic here
 
-            GameObjects.board1.Update();
-            if (GameObjects.board1.hasLost) {
-                GameObjects.board1.ResetMap();
-                GameObjects.board1.hasLost = false;
+            GameObjects.GetBoard().Update();
+            if (GameObjects.GetBoard().hasLost) {
+                GameObjects.GetBoard().ResetMap();
+                GameObjects.GetBoard().hasLost = false;
             }
             GetInput();
             base.Update(gameTime);
@@ -91,33 +91,33 @@ namespace TetrisGame {
                             this.Exit();
                             break;
                         case Keys.D:
-                            GameObjects.board1.PrintMap();
+                            GameObjects.GetBoard().PrintMap();
                             break;
                         case Keys.R:
-                            GameObjects.board1.ResetMap();
+                            GameObjects.GetBoard().ResetMap();
                             break;
                         case Keys.P:
-                            GameObjects.board1.SetSpeed(0);
+                            GameObjects.GetBoard().SetSpeed(0);
                             break;
                     }
                     if (!WasKeyPressed(k)) {
                         switch (k) {
                             case Keys.NumPad2:
-                                if (GameObjects.board1.Speed - 2 > 0) {
-                                    GameObjects.board1.SetSpeed(GameObjects.board1.Speed - 2);
+                                if (GameObjects.GetBoard().Speed - 2 > 0) {
+                                    GameObjects.GetBoard().SetSpeed(GameObjects.GetBoard().Speed - 2);
                                 }
                                 break;
                             case Keys.NumPad8:
-                                GameObjects.board1.SetSpeed(GameObjects.board1.Speed + 2);
+                                GameObjects.GetBoard().SetSpeed(GameObjects.GetBoard().Speed + 2);
                                 break;
                             case Keys.Right:
-                                GameObjects.board1.MoveShape(Block.size);
+                                GameObjects.GetBoard().MoveShape(Block.size);
                                 break;
                             case Keys.Left:
-                                GameObjects.board1.MoveShape(-Block.size);
+                                GameObjects.GetBoard().MoveShape(-Block.size);
                                 break;
                             case Keys.Space:
-                                GameObjects.board1.RotateShape();
+                                GameObjects.GetBoard().RotateShape();
                                 break;
                         }
                     }
@@ -159,7 +159,7 @@ namespace TetrisGame {
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes) {
                 pass.Apply();
                 //spriteBatch.Begin();
-                GameObjects.board1.Draw(spriteBatch, GraphicsDevice);
+                GameObjects.GetBoard().Draw(spriteBatch, GraphicsDevice);
                 //spriteBatch.End();
                 base.Draw(gameTime);
             }

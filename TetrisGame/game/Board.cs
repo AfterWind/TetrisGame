@@ -36,18 +36,7 @@ namespace TetrisGame.game {
             this.movingShape = shape;
         }
 
-        public void PrintMap() {
-            Console.Out.WriteLine("Printing Map: ");
-            for (int j = 0; j < blockArray.Length / blockArray.GetLength(0); j++) {
-                for (int i = 0; i < blockArray.GetLength(0); i++) {
-                    if (blockArray[i, j] != null)
-                        Console.Out.Write("1 ");
-                    else
-                        Console.Out.Write("0 ");
-                }
-                Console.Out.Write("\n");
-            }
-        }
+        
 
         public void Draw(SpriteBatch batch, GraphicsDevice device) {
             // Draw the borders
@@ -94,6 +83,11 @@ namespace TetrisGame.game {
         }
 
         public void Update() {
+
+            // Universally used variables
+            int i, j;
+
+            // Move the shape that is controlled by the player
             if (movingShape != null) {
                 if (movingShape.MoveCheckY(Speed)) {
 
@@ -108,9 +102,22 @@ namespace TetrisGame.game {
             } else {
                 AddShape(Utils.GetRandomShape());
             }
-            for (int i = 0; i < blockArray.GetLength(0); i++) {
+
+            // Verify if there are blocks in the first row, if so player loses
+            for (i = 0; i < blockArray.GetLength(0); i++) {
                 if (blockArray[i, 0] != null)
                     hasLost = true;
+            }
+
+            // Verify if a row has been filled
+            for (j = 0; j < blockArray.Length / blockArray.GetLength(0); j++) {
+                for (i = 0; i < blockArray.GetLength(0); i++) {
+                    if (blockArray[i, j] == null)
+                        break;
+                }
+                if (i >= blockArray.GetLength(0)) {
+                    RemoveRow(j);
+                }
             }
         }
 
@@ -120,6 +127,31 @@ namespace TetrisGame.game {
             }
         }
 
+        public void RotateShape() {
+            if (movingShape != null)
+                movingShape.Rotate();
+        }
+
+        public void RemoveRow(int row) {
+            for (int j = row; j >= 0; j--) {
+                for (int i = 0; i < blockArray.GetLength(0); i++) {
+                    if (row == j) {
+                        // TODO: Implement a block deleting method
+                        blockArray[i, j] = null;
+
+                    } else if (blockArray[i, j] != null) {
+                        
+                        // TODO: Better block movement
+                        blockArray[i, j].Move(0, Block.size);
+                        blockArray[i, j + 1] = blockArray[i, j];
+                        blockArray[i, j] = null;
+                    }
+                }
+            }
+        }
+
+        
+        
         public void ResetMap() {
             blockArray = new Block[SizeX / Block.size, SizeY / Block.size];
         }
@@ -128,9 +160,17 @@ namespace TetrisGame.game {
             this.Speed = newSpeed;
         }
 
-        public void RotateShape() {
-            if (movingShape != null)
-                movingShape.Rotate();
+        public void PrintMap() {
+            Console.Out.WriteLine("Printing Map: ");
+            for (int j = 0; j < blockArray.Length / blockArray.GetLength(0); j++) {
+                for (int i = 0; i < blockArray.GetLength(0); i++) {
+                    if (blockArray[i, j] != null)
+                        Console.Out.Write("1 ");
+                    else
+                        Console.Out.Write("0 ");
+                }
+                Console.Out.Write("\n");
+            }
         }
     }
 }

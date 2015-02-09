@@ -22,19 +22,16 @@ namespace TetrisGame {
         public static ContentManager content;
         public static void Init(ContentManager content) {
             GameObjects.content = content;
-            patterns = new Shape[] {
-            new Shape(GetBoard(), GetRandomColor(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
-            new Shape(GetBoard(), GetRandomColor(), 0, 1, 0, 2, 0, 3),
-            new Shape(GetBoard(), GetRandomColor(), 1, 0, -1, 0, 0, 1, 0, -1),
-            new Shape(GetBoard(), GetRandomColor(), 1, 0, -1, 0, 0, -1),
-            new Shape(GetBoard(), GetRandomColor(), 1, 0, 0, -1, 1, -1),
+            Utils.patterns = new Shape[] {
+            new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
+            new Shape(GetBoard(), 0, 1, 0, 2, 0, 3),
+            new Shape(GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
+            new Shape(GetBoard(), 1, 0, -1, 0, 0, -1),
+            new Shape(GetBoard(), 1, 0, 0, -1, 1, -1),
+            new Shape(GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
             };
             
-            
-            GameObjects.GetBoard().AddShape(GetRandomShape());
-
-            
-
+            GameObjects.GetBoard().AddShape(Utils.GetRandomShape());
         }
 
         public static Texture2D PrepareBlockTexture(Color color) {
@@ -55,20 +52,7 @@ namespace TetrisGame {
 
         }
 
-        public static Color[] colors = new Color[] {
-            Color.Red, Color.Green, Color.Yellow, Color.Blue, Color.Black
-        };
-
-        public static Random random = new Random();
-        public static Color GetRandomColor() {
-            return colors[random.Next(colors.Length)];
-        }
-
-        public static Shape[] patterns;
-
-        public static Shape GetRandomShape() {
-            return new Shape(patterns[random.Next(patterns.Length)]);
-        }
+        
     }
 
 

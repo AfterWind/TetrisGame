@@ -99,16 +99,14 @@ namespace TetrisGame.game {
 
                 } else {
                     foreach (Block block in movingShape.blockList) {
-                        Console.WriteLine(block.GetRelativeX() + ", " + block.GetRelativeY());
                         blockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
                         block.X = block.GetRelativeX() * Block.size + PosX;
                         block.Y = block.GetRelativeY() * Block.size + PosY;
-                        Console.WriteLine("Saved a block to location: " + block.GetRelativeX() + ", " + block.GetRelativeY());
                     }
                     movingShape = null;
                 }
             } else {
-                AddShape(GameObjects.GetRandomShape());
+                AddShape(Utils.GetRandomShape());
             }
             for (int i = 0; i < blockArray.GetLength(0); i++) {
                 if (blockArray[i, 0] != null)

@@ -8,21 +8,28 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public class Shape {
-        public List<Block> blockList;
-        public Block center;
-        public Board board;
+        private Board board1;
+        private Point point;
+        private int[] p;
 
-        public Shape(Shape other) : this(other.board, other.center.color, new Point(other.center.X, other.center.Y), GetDifferentialParams(other.blockList, other.center)) { }
-        public Shape(Board board, Color color, params int[] adjacent) : this(board, color, GetDefaultCenter(board, adjacent), adjacent) {}
-        
+        public List<Block> blockList { private set; get; }
+        public Block center { private set; get; }
+        public Board board { private set; get; }
+        public bool isSymmetrical { private set; get; }
+
+        public Shape(Shape other) : this(other.board, Utils.GetRandomColor(), new Point(other.center.X, other.center.Y), Utils.GetDifferentialParams(other.blockList, other.center)) { }
+        public Shape(Board board, params int[] adjacent) : this(board, Utils.GetRandomColor(), Utils.GetDefaultCenter(board, adjacent), adjacent) {}
         public Shape(Board board, Color color, Point centerPoint, params int[] adjacent) {
             this.board = board;
-            blockList = new List<Block>();
-            center = new Block(board, color, centerPoint.X, centerPoint.Y);
+            this.blockList = new List<Block>();
+            this.center = new Block(board, color, centerPoint.X, centerPoint.Y);
+
             blockList.Add(center);
             for (int i = 0; i < adjacent.Length; i += 2) {
                 blockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.size, centerPoint.Y + adjacent[i + 1] * Block.size));
             }
+
+            this.isSymmetrical = Utils.IsSymmetrical(blockList);
         }
 
         public IEnumerator<Block> GetBottomBlocks() {
@@ -94,45 +101,6 @@ namespace TetrisGame.game {
             return true;
         }
 
-        public bool IsPositionValid(int x, int y) {
-            if (x < board.PosX)
-                return false;
-            if (x + Block.size > board.PosX + board.SizeX)
-                return false;
-            if (y < board.PosY)
-                return false;
-            if (y + Block.size > board.PosY + board.SizeY)
-                return false;
-            Block blockCheck = null;
-            try {
-                blockCheck = board.blockArray[(x - board.PosX) / Block.size, (y - board.PosY) / Block.size];
-            } catch (IndexOutOfRangeException) { }
-            if (blockCheck != null)
-                return false;
-            return true;
-        }
-
-        public static int[] GetDifferentialParams(List<Block> blocks, Block center) {
-            int[] array = new int[(blocks.Count - 1) * 2];
-            int i = 0;
-            foreach (Block block in blocks) {
-                if (block != center) {
-                    array[i++] = (block.X - center.X) / Block.size;
-                    array[i++] = (block.Y - center.Y) / Block.size;
-                }
-            }
-            return array;
-        }
-
-        public static Point GetDefaultCenter(Board board, params int[] adjacent) {
-            int minY = 0;
-            for (int i = 1; i < adjacent.Length; i += 2) {
-                if (minY > adjacent[i])
-                    minY = adjacent[i];
-            }
-            return new Point(board.PosX + board.SizeX / 2, minY * (-1) * Block.size + board.PosY);
-        }
-
         
 
         public void RotateLeft() {
@@ -156,7 +124,7 @@ namespace TetrisGame.game {
                 rotatedPoint.X += center.X;
                 rotatedPoint.Y += center.Y;
                 
-                if (IsPositionValid(rotatedPoint.X, rotatedPoint.Y)) {
+                if (Utils.IsPositionValid(board, rotatedPoint.X, rotatedPoint.Y)) {
                     rotatedCoordinates[i] = new Point(rotatedPoint.X, rotatedPoint.Y);
                 } else {
                     break;
@@ -172,7 +140,9 @@ namespace TetrisGame.game {
         }
 
         public void Rotate() {
-            RotateLeft();
+            if (!isSymmetrical) {
+                RotateLeft();
+            }
             /*
             foreach (Block block in blockList) {
                 if (block == center)

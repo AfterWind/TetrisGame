@@ -9,6 +9,7 @@ namespace TetrisGame {
     /// This is the main type for your game
     /// </summary>
     public class Game1 : Game {
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private BasicEffect basicEffect;

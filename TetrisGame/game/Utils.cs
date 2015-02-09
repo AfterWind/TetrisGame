@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TetrisGame.game {
-    class Utils {
+    public class Utils {
         private static Random random = new Random();
         private static Shape[] patterns;
         private static Color[] colors;
@@ -123,11 +123,11 @@ namespace TetrisGame.game {
         public static Shape GetRandomShape() {
             if (patterns == null) {
                 Utils.patterns = new Shape[] {
-                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
+                    //new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
                     new Shape(GameObjects.GetBoard(), 0, 1, 0, 2, 0, 3),
-                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
-                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, -1),
-                    new Shape(GameObjects.GetBoard(), 1, 0, 0, -1, 1, -1),
+                    //new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
+                    //new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, -1),
+                    //new Shape(GameObjects.GetBoard(), 1, 0, 0, -1, 1, -1),
                     //new Shape(GameObjects.GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
                 };
             }

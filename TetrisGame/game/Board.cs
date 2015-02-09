@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public class Board {
+
         public int SizeX { private set; get; }
         public int SizeY { private set; get; }
         public int PosX { private set; get; }
@@ -21,6 +22,10 @@ namespace TetrisGame.game {
 
         private Shape movingShape;
 
+        private int[] RemovingRows;
+        private int[] RemovingRowProgress;
+        private bool CurrentlyRemovingRows = false;
+
         public Board(int posX, int posY, int columns, int rows) {
             BlockArray = new Block[columns, rows];
             this.SizeX = columns * Block.Size;
@@ -28,6 +33,8 @@ namespace TetrisGame.game {
             this.PosX = posX;
             this.PosY = posY;
             this.Speed = 3;
+            this.RemovingRows = new int[rows];
+            this.RemovingRowProgress = new int[rows];
         }
 
         public void AddShape(Shape shape) {
@@ -83,19 +90,21 @@ namespace TetrisGame.game {
         public void Update() {
 
             // Universally used variables
-            int i, j;
+            int i, j, k;
 
             // Move the shape that is controlled by the player
             if (movingShape != null) {
-                if (movingShape.MoveCheckY(Speed)) {
+                if (!CurrentlyRemovingRows) {
+                    if (movingShape.MoveCheckY(Speed)) {
 
-                } else {
-                    foreach (Block block in movingShape.blockList) {
-                        BlockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
-                        block.X = block.GetRelativeX() * Block.Size + PosX;
-                        block.Y = block.GetRelativeY() * Block.Size + PosY;
+                    } else {
+                        foreach (Block block in movingShape.blockList) {
+                            BlockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
+                            block.X = block.GetRelativeX() * Block.Size + PosX;
+                            block.Y = block.GetRelativeY() * Block.Size + PosY;
+                        }
+                        movingShape = null;
                     }
-                    movingShape = null;
                 }
             } else {
                 AddShape(Utils.GetRandomShape());
@@ -114,9 +123,39 @@ namespace TetrisGame.game {
                         break;
                 }
                 if (i >= BlockArray.GetLength(0)) {
-                    RemoveRow(j);
+                    RemovingRows[j] = 1;
+                    CurrentlyRemovingRows = true;
+                    //RemoveRow(j);
                 }
             }
+
+            for (k = 0; k < RemovingRows.Length; k++ ) {
+                if (RemovingRows[k] != 0) {
+                    if (RemovingRowProgress[k] >= BlockArray.GetLength(0)) {
+                        for (j = k - 1; j >= 0; j--) {
+                            for (i = 0; i < BlockArray.GetLength(0); i++) {
+                                if (BlockArray[i, j] != null) {
+                                    BlockArray[i, j].Move(0, Block.Size);
+                                    BlockArray[i, j + 1] = BlockArray[i, j];
+                                    BlockArray[i, j] = null;
+                                }
+                            }
+                        }
+
+                        RemovingRows[k] = 0;
+                        RemovingRowProgress[k] = 0;
+                    } else {
+                        BlockArray[RemovingRowProgress[k]++, k] = null;
+                    }
+                    
+                }
+            }
+
+            for (k = 0; k < RemovingRows.Length; k++)
+                if (RemovingRows[k] != 0)
+                    break;
+            if (k >= RemovingRows.Length)
+                CurrentlyRemovingRows = false;
         }
 
         public void MoveShape(int offsetX) {

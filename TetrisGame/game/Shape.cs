@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public class Shape {
+
         public List<Block> blockList { private set; get; }
         public Block center { private set; get; }
         public Board board { private set; get; }

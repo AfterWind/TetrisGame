@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TetrisGame.game;
 
 namespace TetrisGame {
-    class GameObjects {
+    public class GameObjects {
 
         public static Color FromColor { private set; get; }
         public static ContentManager Content { private set; get; }

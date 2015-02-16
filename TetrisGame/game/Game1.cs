@@ -15,6 +15,8 @@ namespace TetrisGame {
         private BasicEffect basicEffect;
         private KeyboardState oldState;
 
+        private Texture2D background;
+
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -43,6 +45,8 @@ namespace TetrisGame {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameObjects.Init(Content);
             basicEffect = new BasicEffect(GraphicsDevice);
+
+            background = this.Content.Load<Texture2D>("bg");
             // TODO: use this.Content to load your game content here
         }
 
@@ -156,7 +160,11 @@ namespace TetrisGame {
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes) {
                 pass.Apply();
                 //spriteBatch.Begin();
+                spriteBatch.Begin();
+                spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                spriteBatch.End();
                 GameObjects.GetBoard().Draw(spriteBatch, GraphicsDevice);
+                
                 //spriteBatch.End();
                 base.Draw(gameTime);
             }

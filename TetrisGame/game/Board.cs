@@ -43,7 +43,7 @@ namespace TetrisGame.game {
         }
 
         public void AddShape(Shape shape) {
-            shape.MoveTo(PosX + SizeX + DIFFX_NEXT_SHAPE, PosY + DIFFY_NEXT_SHAPE);
+            shape.MoveTo(PosX + SizeX + DIFFX_NEXT_SHAPE, shape.center.Y);
             if(nextShape != null)
                 nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.blockList, nextShape.center));
             this.movingShape = nextShape;
@@ -111,7 +111,6 @@ namespace TetrisGame.game {
 
                     } else {
                         foreach (Block block in movingShape.blockList) {
-                            Console.WriteLine("Position: " + block.GetRelativeX() + ", " + block.GetRelativeY() + " with actual coords " + block.X + ", " + block.Y);
                             BlockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
                             block.X = block.GetRelativeX() * Block.Size + PosX;
                             block.Y = block.GetRelativeY() * Block.Size + PosY;

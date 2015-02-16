@@ -33,6 +33,15 @@ namespace TetrisGame.game {
             return new Point(board.PosX + board.SizeX / 2, minY * (-1) * Block.Size + board.PosY);
         }
 
+        public static Point GetDefaultCenter(Board board, List<Block> blockList, Block center) {
+            int minY = 0;
+            foreach (Block b in blockList) {
+                if (minY > (b.Y - center.Y))
+                    minY = (b.Y - center.Y);
+            }
+            return new Point(board.PosX + board.SizeX / 2, minY * (-1) + board.PosY);
+        }
+
         public static Texture2D PrepareBlockTexture(Color color) {
             Texture2D texture = GameObjects.Content.Load<Texture2D>("Block");
             Color[] pixels = new Color[texture.Width * texture.Height];
@@ -105,7 +114,6 @@ namespace TetrisGame.game {
                     }
                 }   
             }
-
             return true;
         }
 
@@ -122,13 +130,13 @@ namespace TetrisGame.game {
 
         public static Shape GetRandomShape() {
             if (patterns == null) {
-                Utils.patterns = new Shape[] {
-                    //new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
+                patterns = new Shape[] {
+                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
                     new Shape(GameObjects.GetBoard(), 0, 1, 0, 2, 0, 3),
-                    //new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
-                    //new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, -1),
-                    //new Shape(GameObjects.GetBoard(), 1, 0, 0, -1, 1, -1),
-                    //new Shape(GameObjects.GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
+                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
+                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, -1),
+                    new Shape(GameObjects.GetBoard(), 1, 0, 0, -1, 1, -1),
+                    new Shape(GameObjects.GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
                 };
             }
             return new Shape(patterns[random.Next(patterns.Length)]);

@@ -20,8 +20,13 @@ namespace TetrisGame.game {
         private static readonly int BORDER_SIZE = 5;
         private static readonly Color BORDER_COLOR = Color.Black;
 
-        private Shape movingShape;
+        private static readonly int DIFFX_NEXT_SHAPE = 150;
+        private static readonly int DIFFY_NEXT_SHAPE = 40;
 
+        private Shape movingShape;
+        private Shape nextShape;
+
+        //TODO: Get rid of most of these variables for a better way to remove rows
         private int[] RemovingRows;
         private int[] RemovingRowProgress;
         private bool CurrentlyRemovingRows = false;
@@ -38,10 +43,12 @@ namespace TetrisGame.game {
         }
 
         public void AddShape(Shape shape) {
-            this.movingShape = shape;
+            shape.MoveTo(PosX + SizeX + DIFFX_NEXT_SHAPE, PosY + DIFFY_NEXT_SHAPE);
+            if(nextShape != null)
+                nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.blockList, nextShape.center));
+            this.movingShape = nextShape;
+            this.nextShape = shape;
         }
-
-        
 
         public void Draw(SpriteBatch batch, GraphicsDevice device) {
             // Draw the borders
@@ -84,6 +91,11 @@ namespace TetrisGame.game {
             // Draw the moving shape
             if (movingShape != null)
                 movingShape.Draw(batch);
+            
+            // Draw the next shape
+            if (nextShape != null)
+                nextShape.Draw(batch);
+
             batch.End();    
         }
 
@@ -99,6 +111,7 @@ namespace TetrisGame.game {
 
                     } else {
                         foreach (Block block in movingShape.blockList) {
+                            Console.WriteLine("Position: " + block.GetRelativeX() + ", " + block.GetRelativeY() + " with actual coords " + block.X + ", " + block.Y);
                             BlockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
                             block.X = block.GetRelativeX() * Block.Size + PosX;
                             block.Y = block.GetRelativeY() * Block.Size + PosY;
@@ -125,7 +138,6 @@ namespace TetrisGame.game {
                 if (i >= BlockArray.GetLength(0)) {
                     RemovingRows[j] = 1;
                     CurrentlyRemovingRows = true;
-                    //RemoveRow(j);
                 }
             }
 
@@ -147,7 +159,6 @@ namespace TetrisGame.game {
                     } else {
                         BlockArray[RemovingRowProgress[k]++, k] = null;
                     }
-                    
                 }
             }
 

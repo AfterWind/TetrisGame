@@ -17,8 +17,9 @@ namespace TetrisGame {
         // TODO: Allow multiple boards.
         private static Board board1;
         public static Board GetBoard() {
-            if(board1 == null)
+            if (board1 == null) {
                 board1 = new Board(20, 20, 16, 20);
+            }
             return board1;
         }
         
@@ -26,6 +27,7 @@ namespace TetrisGame {
             Content = content;
             FromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
             GameObjects.GetBoard().AddShape(Utils.GetRandomShape());
+
         }
 
         public static void Update(SpriteBatch batch) {

@@ -29,7 +29,9 @@ namespace TetrisGame {
         protected override void Initialize() {
             // TODO: Add your initialization logic here
             base.Initialize();
-        }
+            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferWidth = 800;
+        }   
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load

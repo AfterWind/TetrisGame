@@ -41,9 +41,22 @@ namespace TetrisGame.game {
             }
         }
 
-        private void Move(int offX, int offY) {
+        public void Move(int offX, int offY) {
             foreach (Block block in blockList) {
                 block.Move(offX, offY);
+            }
+        }
+
+        public void MoveTo(Point p) {
+            MoveTo(p.X, p.Y);
+        }
+
+        public void MoveTo(int x, int y) {
+            int centerX = center.X;
+            int centerY = center.Y;
+            foreach (Block block in blockList) {
+                block.X = x + (block.X - centerX);
+                block.Y = y + (block.Y - centerY);
             }
         }
 

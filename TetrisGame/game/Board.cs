@@ -22,6 +22,7 @@ namespace TetrisGame.game {
 
         private static readonly int DIFFX_NEXT_SHAPE = 150;
         private static readonly int DIFFY_NEXT_SHAPE = 40;
+        private static readonly int BOX_SIZE = 150;
 
         private Shape movingShape;
         private Shape nextShape;
@@ -71,15 +72,15 @@ namespace TetrisGame.game {
 
 
             // Draw the borders less efficient
-            Texture2D Pixel = new Texture2D(device, 1, 1);
-            Pixel.SetData(new Color[] { BORDER_COLOR });
-            batch.Begin();
-            batch.Draw(Pixel, new Rectangle(PosX - BORDER_SIZE, PosY - BORDER_SIZE, BORDER_SIZE, SizeY + BORDER_SIZE), Color.White);
-            batch.Draw(Pixel, new Rectangle(PosX - BORDER_SIZE, PosY + SizeY, SizeX + BORDER_SIZE, BORDER_SIZE), Color.White);
-            batch.Draw(Pixel, new Rectangle(PosX, PosY - BORDER_SIZE, SizeX + BORDER_SIZE, BORDER_SIZE), Color.White);
-            batch.Draw(Pixel, new Rectangle(PosX + SizeX, PosY, BORDER_SIZE, SizeY + BORDER_SIZE), Color.White);
-            batch.End();
+
+            GraphicUtils.DrawRectangle(batch, Color.Black, PosX, PosY, SizeX, SizeY, BORDER_SIZE);
+            GraphicUtils.DrawTransparentRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX, PosY, SizeX, SizeY);
             
+            
+            //GraphicUtils.DrawRectangle(batch, , PosX, PosY, )
+            
+            GraphicUtils.DrawRectangle(batch, Color.Black, PosX + SizeX + DIFFX_NEXT_SHAPE - BOX_SIZE / 2 + Block.Size / 2, PosY, BOX_SIZE, BOX_SIZE, BORDER_SIZE);
+            GraphicUtils.DrawTransparentRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX + SizeX + DIFFX_NEXT_SHAPE - BOX_SIZE / 2 + Block.Size / 2, PosY, BOX_SIZE, BOX_SIZE);
 
             batch.Begin();
             // Draw all the blocks

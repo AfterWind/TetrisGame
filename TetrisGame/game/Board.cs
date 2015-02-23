@@ -13,9 +13,20 @@ namespace TetrisGame.game {
         public int SizeY { private set; get; }
         public int PosX { private set; get; }
         public int PosY { private set; get; }
-        public int Speed { private set; get; }
+        public int Level {private set; get; }
+        
+        public int SpeedIncrease { private set; get; }
+        public int DebugSpeedIncrease { private set; get; }
+
         public Block[,] BlockArray { private set; get; }
         public bool HasLost { private set; get; }
+
+        public int Speed {
+            get {
+                return Paused ? 0 : INITIAL_SPEED + (Level / 3) + SpeedIncrease;
+            }
+        }
+        public bool Paused { set; get; }
 
         private static readonly int BORDER_SIZE = 5;
         private static readonly Color BORDER_COLOR = Color.Black;
@@ -23,6 +34,8 @@ namespace TetrisGame.game {
         private static readonly int DIFFX_NEXT_SHAPE = 150;
         private static readonly int DIFFY_NEXT_SHAPE = 40;
         private static readonly int BOX_SIZE = 150;
+
+        private static readonly int INITIAL_SPEED = 3;
 
         private Shape movingShape;
         private Shape nextShape;
@@ -38,12 +51,12 @@ namespace TetrisGame.game {
             this.SizeY = rows * Block.Size;
             this.PosX = posX;
             this.PosY = posY;
-            this.Speed = 3;
             this.RemovingRows = new int[rows];
             this.RemovingRowProgress = new int[rows];
         }
 
         public void AddShape(Shape shape) {
+            this.SpeedIncrease = 0;
             shape.MoveTo(PosX + SizeX + DIFFX_NEXT_SHAPE, shape.center.Y);
             if(nextShape != null)
                 nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.blockList, nextShape.center));
@@ -205,8 +218,12 @@ namespace TetrisGame.game {
             HasLost = false;
         }
 
-        public void SetSpeed(int newSpeed) {
-            this.Speed = newSpeed;
+        public void IncreaseSpeed(int speed) {
+            this.SpeedIncrease += speed;
+        }
+
+        public void DebugIncreaseSpeed(int speed) {
+            this.DebugIncreaseSpeed += speed;
         }
 
         public void PrintMap() {

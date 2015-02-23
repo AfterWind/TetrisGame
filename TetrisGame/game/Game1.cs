@@ -97,19 +97,16 @@ namespace TetrisGame {
                         case Keys.R:
                             GameObjects.GetBoard().ResetMap();
                             break;
-                        case Keys.P:
-                            GameObjects.GetBoard().SetSpeed(0);
-                            break;
                     }
                     if (!WasKeyPressed(k)) {
                         switch (k) {
                             case Keys.NumPad2:
                                 if (GameObjects.GetBoard().Speed - 2 > 0) {
-                                    GameObjects.GetBoard().SetSpeed(GameObjects.GetBoard().Speed - 2);
+                                    GameObjects.GetBoard().IncreaseSpeed(-2);
                                 }
                                 break;
                             case Keys.NumPad8:
-                                GameObjects.GetBoard().SetSpeed(GameObjects.GetBoard().Speed + 2);
+                                GameObjects.GetBoard().IncreaseSpeed(2);
                                 break;
                             case Keys.Right:
                                 GameObjects.GetBoard().MoveShape(Block.Size);
@@ -117,8 +114,14 @@ namespace TetrisGame {
                             case Keys.Left:
                                 GameObjects.GetBoard().MoveShape(-Block.Size);
                                 break;
+                            case Keys.Down:
+                                GameObjects.GetBoard().IncreaseSpeed(GameObjects.GetBoard().Speed);
+                                break;
                             case Keys.Space:
                                 GameObjects.GetBoard().RotateShape();
+                                break;
+                            case Keys.P:
+                                GameObjects.GetBoard().Paused = GameObjects.GetBoard().Paused ? false : true;
                                 break;
                         }
                     }

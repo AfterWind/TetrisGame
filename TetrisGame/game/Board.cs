@@ -16,7 +16,7 @@ namespace TetrisGame.game {
         public int Level {private set; get; }
         
         public int SpeedIncrease { private set; get; }
-        public int DebugSpeedIncrease { private set; get; }
+        public int SpeedIncreaseDebug { private set; get; }
 
         public Block[,] BlockArray { private set; get; }
         public bool HasLost { private set; get; }
@@ -31,8 +31,8 @@ namespace TetrisGame.game {
         private static readonly int BORDER_SIZE = 5;
         private static readonly Color BORDER_COLOR = Color.Black;
 
-        private static readonly int DIFFX_NEXT_SHAPE = 150;
-        private static readonly int DIFFY_NEXT_SHAPE = 40;
+        private static readonly int DIFFX_NEXT_SHAPE = 50;
+        private static readonly int DIFFY_NEXT_SHAPE = 30;
         private static readonly int BOX_SIZE = 150;
 
         private static readonly int INITIAL_SPEED = 3;
@@ -57,7 +57,7 @@ namespace TetrisGame.game {
 
         public void AddShape(Shape shape) {
             this.SpeedIncrease = 0;
-            shape.MoveTo(PosX + SizeX + DIFFX_NEXT_SHAPE, shape.center.Y);
+            shape.MoveTo(PosX + SizeX / 2 - 2*Block.Size / 2, PosY + SizeY + DIFFY_NEXT_SHAPE + BOX_SIZE / 2);
             if(nextShape != null)
                 nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.blockList, nextShape.center));
             this.movingShape = nextShape;
@@ -72,7 +72,7 @@ namespace TetrisGame.game {
             VertexPositionColor[] points = new VertexPositionColor[4];
 
             points[0] = new VertexPositionColor(new Vector3(PosX - BORDER_SIZE / 2, PosY - BORDER_SIZE / 2, 0), BORDER_COLOR);
-            points[1] = new VertexPositionColor(new Vector3(PosX + SizeX + BORDER_SIZE / 2, PosY - BORDER_SIZE / 2, 0), BORDER_COLOR);
+            points[1] = new VertexPositionColor(new Vector3(Po6sX + SizeX + BORDER_SIZE / 2, PosY - BORDER_SIZE / 2, 0), BORDER_COLOR);
             points[2] = new VertexPositionColor(new Vector3(PosX + SizeX + BORDER_SIZE / 2, PosY + SizeY + BORDER_SIZE / 2, 0), BORDER_COLOR);
             points[3] = new VertexPositionColor(new Vector3(PosX - BORDER_SIZE / 2, PosY + SizeY + BORDER_SIZE / 2, 0), BORDER_COLOR);
 
@@ -92,8 +92,8 @@ namespace TetrisGame.game {
             
             //GraphicUtils.DrawRectangle(batch, , PosX, PosY, )
             
-            GraphicUtils.DrawRectangle(batch, Color.Black, PosX + SizeX + DIFFX_NEXT_SHAPE - BOX_SIZE / 2 + Block.Size / 2, PosY, BOX_SIZE, BOX_SIZE, BORDER_SIZE);
-            GraphicUtils.DrawTransparentRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX + SizeX + DIFFX_NEXT_SHAPE - BOX_SIZE / 2 + Block.Size / 2, PosY, BOX_SIZE, BOX_SIZE);
+            GraphicUtils.DrawRectangle(batch, Color.Black, PosX + SizeX / 2 - BOX_SIZE / 2, PosY + SizeY + 2*BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE, BORDER_SIZE);
+            GraphicUtils.DrawTransparentRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX + SizeX/2 - BOX_SIZE / 2, PosY + SizeY + 2*BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE);
 
             batch.Begin();
             // Draw all the blocks
@@ -210,8 +210,6 @@ namespace TetrisGame.game {
                 }
             }
         }
-
-        
         
         public void ResetMap() {
             BlockArray = new Block[SizeX / Block.Size, SizeY / Block.Size];
@@ -223,7 +221,7 @@ namespace TetrisGame.game {
         }
 
         public void DebugIncreaseSpeed(int speed) {
-            this.DebugIncreaseSpeed += speed;
+            this.SpeedIncreaseDebug += speed;
         }
 
         public void PrintMap() {

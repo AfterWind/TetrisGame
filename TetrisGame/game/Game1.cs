@@ -31,8 +31,8 @@ namespace TetrisGame {
         protected override void Initialize() {
             // TODO: Add your initialization logic here
             base.Initialize();
-            graphics.PreferredBackBufferHeight = 600;
-            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
         }   
 
         /// <summary>

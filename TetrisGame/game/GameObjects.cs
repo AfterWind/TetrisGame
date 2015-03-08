@@ -31,7 +31,7 @@ namespace TetrisGame {
         }
 
         public static void Update(SpriteBatch batch) {
-
+            
         }
 
         

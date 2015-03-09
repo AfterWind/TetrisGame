@@ -23,7 +23,7 @@ namespace TetrisGame.game {
 
         public int Speed {
             get {
-                return Paused ? 0 : INITIAL_SPEED + (Level / 3) + SpeedIncrease;
+                return Paused ? 0 : INITIAL_SPEED + (Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
             }
         }
         public bool Paused { set; get; }
@@ -57,7 +57,7 @@ namespace TetrisGame.game {
 
         public void AddShape(Shape shape) {
             this.SpeedIncrease = 0;
-            shape.MoveTo(PosX + SizeX / 2 - 2*Block.Size / 2, PosY + SizeY + DIFFY_NEXT_SHAPE + BOX_SIZE / 2);
+            shape.MoveTo(PosX + SizeX / 2 - Block.Size / 2, PosY + SizeY + DIFFY_NEXT_SHAPE + BOX_SIZE / 2);
             if(nextShape != null)
                 nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.blockList, nextShape.center));
             this.movingShape = nextShape;
@@ -124,15 +124,20 @@ namespace TetrisGame.game {
                     if (movingShape.MoveCheckY(Speed)) {
 
                     } else {
+
                         foreach (Block block in movingShape.blockList) {
+                            Console.WriteLine("Finding block at: " + block.GetRelativeX() + ", " + block.GetRelativeY());
                             BlockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
                             block.X = block.GetRelativeX() * Block.Size + PosX;
                             block.Y = block.GetRelativeY() * Block.Size + PosY;
                         }
+                        
                         movingShape = null;
                     }
                 }
             } else {
+                Shape randomShape = Utils.GetRandomShape();
+                randomShape.SetBoard(this, Utils.GetRandomColor(), Utils.GetDefaultCenter(this, randomShape.adjacent));
                 AddShape(Utils.GetRandomShape());
             }
 

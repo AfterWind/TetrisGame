@@ -14,13 +14,24 @@ namespace TetrisGame.game {
         public Board board { private set; get; }
         public bool isSymmetrical { private set; get; }
 
+        public int[] adjacent;
+
         public Shape(Shape other) : this(other.board, Utils.GetRandomColor(), new Point(other.center.X, other.center.Y), Utils.GetDifferentialParams(other.blockList, other.center)) { }
         public Shape(Board board, params int[] adjacent) : this(board, Utils.GetRandomColor(), Utils.GetDefaultCenter(board, adjacent), adjacent) { }
         public Shape(Board board, Color color, Point centerPoint, params int[] adjacent) {
             this.board = board;
-            this.blockList = new List<Block>();
+            this.adjacent = adjacent;
+            SetBoard(board, color, centerPoint);
+        }
+        public Shape(params int[] adjacent) {
+            this.adjacent = adjacent;
+        }
+
+        public void SetBoard(Board board, Color color, Point centerPoint) {
+            this.board = board;
             this.center = new Block(board, color, centerPoint.X, centerPoint.Y);
 
+            this.blockList = new List<Block>();
             blockList.Add(center);
             for (int i = 0; i < adjacent.Length; i += 2) {
                 blockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.Size, centerPoint.Y + adjacent[i + 1] * Block.Size));

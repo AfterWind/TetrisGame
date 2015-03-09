@@ -14,18 +14,39 @@ namespace TetrisGame {
         public static Color FromColor { private set; get; }
         public static ContentManager Content { private set; get; }
 
+        private static Board[] boards;
         // TODO: Allow multiple boards.
-        private static Board board1;
+        public static Board[] Boards {
+            get {
+                if (boards == null) {
+                    boards = new Board[4];
+                    for (int i = 0; i < 4; i++)
+                        boards[i] = new Board(i * (20 + (16 * Block.Size)), 20, 16, 20);
+                    Console.WriteLine("Returning...");
+                }
+                
+                return boards;
+            }
+            private set {
+                boards = value;   
+            }
+        }
+        private static int selectedBoard = 0;
+
         public static Board GetBoard() {
+            /*
             if (board1 == null) {
                 board1 = new Board(20, 20, 16, 20);
             }
-            return board1;
+             * */
+            return Boards[selectedBoard];
         }
         
         public static void Init(ContentManager content) {
             Content = content;
             FromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
+            Shape randomShape = Utils.GetRandomShape();
+            randomShape.SetBoard(GetBoard(), Utils.GetRandomColor(), Utils.GetDefaultCenter(GetBoard(), randomShape.adjacent));
             GameObjects.GetBoard().AddShape(Utils.GetRandomShape());
 
         }

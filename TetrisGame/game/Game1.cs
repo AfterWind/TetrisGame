@@ -67,10 +67,13 @@ namespace TetrisGame {
         protected override void Update(GameTime gameTime) {
             // TODO: Add your update logic here
 
-            GameObjects.GetBoard().Update();
-            if (GameObjects.GetBoard().HasLost) {
-                GameObjects.GetBoard().ResetMap();
+            foreach (Board board in GameObjects.Boards) {
+                board.Update();
+                if (board.HasLost) {
+                    board.ResetMap();
+                }
             }
+
             GetInput();
             base.Update(gameTime);
         }
@@ -102,11 +105,11 @@ namespace TetrisGame {
                         switch (k) {
                             case Keys.NumPad2:
                                 if (GameObjects.GetBoard().Speed - 2 > 0) {
-                                    GameObjects.GetBoard().IncreaseSpeed(-2);
+                                    GameObjects.GetBoard().DebugIncreaseSpeed(-2);
                                 }
                                 break;
                             case Keys.NumPad8:
-                                GameObjects.GetBoard().IncreaseSpeed(2);
+                                GameObjects.GetBoard().DebugIncreaseSpeed(2);
                                 break;
                             case Keys.Right:
                                 GameObjects.GetBoard().MoveShape(Block.Size);
@@ -135,6 +138,7 @@ namespace TetrisGame {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // These three lines are required if you use SpriteBatch, to reset the states that it sets
@@ -166,11 +170,14 @@ namespace TetrisGame {
                 spriteBatch.Begin();
                 spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                 spriteBatch.End();
-                GameObjects.GetBoard().Draw(spriteBatch, GraphicsDevice);
+                foreach (Board board in GameObjects.Boards)
+                    board.Draw(spriteBatch, GraphicsDevice);
                 
+
                 //spriteBatch.End();
                 base.Draw(gameTime);
             }
+
         }
     }
 }

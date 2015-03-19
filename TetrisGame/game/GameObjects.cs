@@ -45,10 +45,6 @@ namespace TetrisGame {
         public static void Init(ContentManager content) {
             Content = content;
             FromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
-            Shape randomShape = Utils.GetRandomShape();
-            randomShape.SetBoard(GetBoard(), Utils.GetRandomColor(), Utils.GetDefaultCenter(GetBoard(), randomShape.adjacent));
-            GameObjects.GetBoard().AddShape(Utils.GetRandomShape());
-
         }
 
         public static void Update(SpriteBatch batch) {

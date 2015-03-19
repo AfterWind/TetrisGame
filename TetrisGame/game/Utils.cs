@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,9 @@ using System.Threading.Tasks;
 namespace TetrisGame.game {
     public class Utils {
         private static Random random = new Random();
-        private static Shape[] patterns;
+        private static List<int[]> patterns;
         private static Color[] colors;
+        private static Dictionary<Color, Texture2D> textures;
 
         public static int[] GetDifferentialParams(List<Block> blocks, Block center) {
             int[] array = new int[(blocks.Count - 1) * 2];
@@ -25,11 +27,17 @@ namespace TetrisGame.game {
         }
 
         public static Point GetDefaultCenter(Board board, params int[] adjacent) {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             int minY = 0;
             for (int i = 1; i < adjacent.Length; i += 2) {
                 if (minY > adjacent[i])
                     minY = adjacent[i];
             }
+            sw.Stop();
+            Console.WriteLine("Finished getting center with " + sw.ElapsedMilliseconds);
+        
             return new Point(board.PosX + board.SizeX / 2, minY * (-1) * Block.Size + board.PosY);
         }
 
@@ -75,7 +83,6 @@ namespace TetrisGame.game {
         }
 
         public static bool IsSymmetrical(List<Block> blocks) {
-
             int centerX = 0, centerY = 0;
             foreach(Block block in blocks) {
                 centerX += block.X + Block.Size / 2;
@@ -128,18 +135,28 @@ namespace TetrisGame.game {
             return colors[random.Next(colors.Length)];
         }
 
-        public static Shape GetRandomShape() {
+        public static Shape GetRandomShape(Board board) {
             if (patterns == null) {
-                patterns = new Shape[] {
-                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, -1, -1, 1, -1),
-                    new Shape(GameObjects.GetBoard(), 0, 1, 0, 2, 0, 3),
-                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, 1, 0, -1),
-                    new Shape(GameObjects.GetBoard(), 1, 0, -1, 0, 0, -1),
-                    new Shape(GameObjects.GetBoard(), 1, 0, 0, -1, 1, -1),
-                    new Shape(GameObjects.GetBoard(), 0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1) // lol
+                patterns = new List<int[]> {
+                    new int[] {1, 0, -1, 0, 0, 1, -1, -1, 1, -1},
+                    new int[] {0, 1, 0, 2, 0, 3},
+                    new int[] {1, 0, -1, 0, 0, 1, 0, -1},
+                    new int[] {1, 0, -1, 0, 0, -1},
+                    new int[] {1, 0, 0, -1, 1, -1},
+                    new int[] {0, -1, 0, -2, 0, -3, 1, 0, 1, -1, 1, -2, 1, -3, -1, 0, -2, 0, -1, -1, -2, -1, 0, 1, 0, 2, 1, 1, 1, 2, 2, 0, 3, 0, 2, -1, 3, -1} // lol
                 };
             }
-            return new Shape(patterns[random.Next(patterns.Length)]);
+            return new Shape(board, patterns[random.Next(0, patterns.Count)]);
+        }
+
+        public static Texture2D GetTextureForColor(Color color) {
+            if (textures == null) {
+                textures = new Dictionary<Color, Texture2D>();
+                foreach (Color c in colors) {
+                    textures.Add(c, PrepareBlockTexture(c));
+                }
+            }
+            return textures[color];
         }
     }
 }

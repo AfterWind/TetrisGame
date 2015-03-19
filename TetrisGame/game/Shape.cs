@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,41 +10,37 @@ using System.Threading.Tasks;
 namespace TetrisGame.game {
     public class Shape {
 
-        public List<Block> blockList { private set; get; }
-        public Block center { private set; get; }
-        public Board board { private set; get; }
+        public List<Block> BlockList { private set; get; }
+        public Block Center { private set; get; }
+        public Board Board { private set; get; }
         public bool isSymmetrical { private set; get; }
 
-        public int[] adjacent;
-
-        public Shape(Shape other) : this(other.board, Utils.GetRandomColor(), new Point(other.center.X, other.center.Y), Utils.GetDifferentialParams(other.blockList, other.center)) { }
         public Shape(Board board, params int[] adjacent) : this(board, Utils.GetRandomColor(), Utils.GetDefaultCenter(board, adjacent), adjacent) { }
         public Shape(Board board, Color color, Point centerPoint, params int[] adjacent) {
-            this.board = board;
-            this.adjacent = adjacent;
-            SetBoard(board, color, centerPoint);
-        }
-        public Shape(params int[] adjacent) {
-            this.adjacent = adjacent;
-        }
+            this.Board = board;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
 
-        public void SetBoard(Board board, Color color, Point centerPoint) {
-            this.board = board;
-            this.center = new Block(board, color, centerPoint.X, centerPoint.Y);
+            
+            this.Center = new Block(board, color, centerPoint.X, centerPoint.Y);
 
-            this.blockList = new List<Block>();
-            blockList.Add(center);
+            sw.Stop();
+            Console.WriteLine("Finished initializing board and center with " + sw.ElapsedMilliseconds);
+        
+
+            this.BlockList = new List<Block>();
+            BlockList.Add(Center);
             for (int i = 0; i < adjacent.Length; i += 2) {
-                blockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.Size, centerPoint.Y + adjacent[i + 1] * Block.Size));
+                BlockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.Size, centerPoint.Y + adjacent[i + 1] * Block.Size));
             }
-
-            this.isSymmetrical = Utils.IsSymmetrical(blockList);
+            
+            this.isSymmetrical = Utils.IsSymmetrical(BlockList);
         }
 
         public IEnumerator<Block> GetBottomBlocks() {
-            foreach (Block block in blockList) {
+            foreach (Block block in BlockList) {
                 bool ok = true;
-                foreach (Block blockBelow in blockList) {
+                foreach (Block blockBelow in BlockList) {
                     if (blockBelow.X == block.X && blockBelow.Y == block.Y - Block.Size)
                         ok = false;
                 }
@@ -53,7 +50,7 @@ namespace TetrisGame.game {
         }
 
         public void Move(int offX, int offY) {
-            foreach (Block block in blockList) {
+            foreach (Block block in BlockList) {
                 block.Move(offX, offY);
             }
         }
@@ -63,28 +60,28 @@ namespace TetrisGame.game {
         }
 
         public void MoveTo(int x, int y) {
-            int centerX = center.X;
-            int centerY = center.Y;
-            foreach (Block block in blockList) {
+            int centerX = Center.X;
+            int centerY = Center.Y;
+            foreach (Block block in BlockList) {
                 block.X = x + (block.X - centerX);
                 block.Y = y + (block.Y - centerY);
             }
         }
 
         public bool MoveCheckX(int offX) {
-            foreach (Block block in blockList) {
+            foreach (Block block in BlockList) {
                 int newX = block.X + offX;
-                if (newX < board.PosX) {
-                    Move(board.PosX - block.X, 0);
+                if (newX < Board.PosX) {
+                    Move(Board.PosX - block.X, 0);
                     return false;
                 }
-                if (newX + Block.Size > board.PosX + board.SizeX) {
-                    Move(board.PosX + board.SizeX - block.X - Block.Size, 0);
+                if (newX + Block.Size > Board.PosX + Board.SizeX) {
+                    Move(Board.PosX + Board.SizeX - block.X - Block.Size, 0);
                     return false;
                 }
                 Block blockCheck = null;
                 try {
-                    blockCheck = board.BlockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
+                    blockCheck = Board.BlockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
                 } catch (IndexOutOfRangeException) { }
                 if (blockCheck != null) {
                     Move(blockCheck.X - block.X - Math.Sign(offX) * Block.Size, 0);
@@ -98,18 +95,18 @@ namespace TetrisGame.game {
         }
 
         public bool MoveCheckY(int offY) {
-            foreach (Block block in blockList) {
+            foreach (Block block in BlockList) {
                 int newY = block.Y + offY;
-                if (newY < board.PosY)
+                if (newY < Board.PosY)
                     return false;
-                if (newY + Block.Size > board.PosY + board.SizeY) {
-                    Move(0, board.PosY + board.SizeY - block.Y - Block.Size);
+                if (newY + Block.Size > Board.PosY + Board.SizeY) {
+                    Move(0, Board.PosY + Board.SizeY - block.Y - Block.Size);
                     return false;
                 }
                 Block blockCheck = null;
                 for (int i = 1; i <= Math.Ceiling((double)offY / (double)Block.Size) && blockCheck == null; i++) {
                     try {
-                        blockCheck = board.BlockArray[block.GetRelativeX(), block.GetRelativeY() + i];
+                        blockCheck = Board.BlockArray[block.GetRelativeX(), block.GetRelativeY() + i];
                     } catch (IndexOutOfRangeException) { }
                 }
 
@@ -126,12 +123,12 @@ namespace TetrisGame.game {
 
         public void RotateLeft() {
 
-            Point[] rotatedCoordinates = new Point[blockList.Count];
+            Point[] rotatedCoordinates = new Point[BlockList.Count];
             int i = 0; // Is used outside of the for loop
-            for (; i < blockList.Count; i++ ) {
+            for (; i < BlockList.Count; i++ ) {
 
                 Point rotatedPoint;
-                Point translationCoordinate = new Point(blockList[i].X - center.X, blockList[i].Y - center.Y);
+                Point translationCoordinate = new Point(BlockList[i].X - Center.X, BlockList[i].Y - Center.Y);
 
                 translationCoordinate.Y *= -1;
 
@@ -142,20 +139,20 @@ namespace TetrisGame.game {
 
                 rotatedPoint.Y *= -1;
 
-                rotatedPoint.X += center.X;
-                rotatedPoint.Y += center.Y;
+                rotatedPoint.X += Center.X;
+                rotatedPoint.Y += Center.Y;
                 
-                if (Utils.IsPositionValid(board, rotatedPoint.X, rotatedPoint.Y)) {
+                if (Utils.IsPositionValid(Board, rotatedPoint.X, rotatedPoint.Y)) {
                     rotatedCoordinates[i] = new Point(rotatedPoint.X, rotatedPoint.Y);
                 } else {
                     break;
                 }   
             }
             // Check if for loop escaped at the proper time
-            if (i >= blockList.Count) {
-                for (i = 0; i < blockList.Count; i++) {
-                    blockList[i].X = rotatedCoordinates[i].X;
-                    blockList[i].Y = rotatedCoordinates[i].Y;
+            if (i >= BlockList.Count) {
+                for (i = 0; i < BlockList.Count; i++) {
+                    BlockList[i].X = rotatedCoordinates[i].X;
+                    BlockList[i].Y = rotatedCoordinates[i].Y;
                 }
             }
         }
@@ -189,7 +186,7 @@ namespace TetrisGame.game {
         }
 
         public void Draw(SpriteBatch batch) {
-            foreach (Block block in blockList) {
+            foreach (Block block in BlockList) {
                 block.Draw(batch);
             }
         }

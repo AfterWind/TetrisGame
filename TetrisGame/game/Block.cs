@@ -30,7 +30,7 @@ namespace TetrisGame.game {
             this.X = x;
             this.Y = y;
             this.Color = color;
-            this.Texture = Utils.PrepareBlockTexture(color);
+            this.Texture = Utils.GetTextureForColor(color);
             this.Board = board;
         }
 

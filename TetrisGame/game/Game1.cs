@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Diagnostics;
 using TetrisGame.game;
 
 namespace TetrisGame {
@@ -66,6 +67,8 @@ namespace TetrisGame {
        
         protected override void Update(GameTime gameTime) {
             // TODO: Add your update logic here
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
 
             foreach (Board board in GameObjects.Boards) {
                 board.Update();
@@ -76,6 +79,10 @@ namespace TetrisGame {
 
             GetInput();
             base.Update(gameTime);
+            sw.Stop();
+            Console.WriteLine("Finished tick with " + sw.ElapsedMilliseconds);
+            if(sw.ElapsedMilliseconds > 17)
+                Console.WriteLine("Breakpoint.");
         }
 
         protected bool WasKeyPressed(Keys key) {

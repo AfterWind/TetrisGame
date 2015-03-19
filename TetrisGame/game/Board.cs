@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,9 +60,10 @@ namespace TetrisGame.game {
             this.SpeedIncrease = 0;
             shape.MoveTo(PosX + SizeX / 2 - Block.Size / 2, PosY + SizeY + DIFFY_NEXT_SHAPE + BOX_SIZE / 2);
             if(nextShape != null)
-                nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.blockList, nextShape.center));
+                nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.BlockList, nextShape.Center));
             this.movingShape = nextShape;
             this.nextShape = shape;
+            Console.WriteLine("Added shape.");
         }
 
         public void Draw(SpriteBatch batch, GraphicsDevice device) {
@@ -124,9 +126,8 @@ namespace TetrisGame.game {
                     if (movingShape.MoveCheckY(Speed)) {
 
                     } else {
-
-                        foreach (Block block in movingShape.blockList) {
-                            Console.WriteLine("Finding block at: " + block.GetRelativeX() + ", " + block.GetRelativeY());
+                        foreach (Block block in movingShape.BlockList) {
+                            //Console.WriteLine("Finding block at: " + block.GetRelativeX() + ", " + block.GetRelativeY());
                             BlockArray[block.GetRelativeX(), block.GetRelativeY()] = block;
                             block.X = block.GetRelativeX() * Block.Size + PosX;
                             block.Y = block.GetRelativeY() * Block.Size + PosY;
@@ -136,9 +137,13 @@ namespace TetrisGame.game {
                     }
                 }
             } else {
-                Shape randomShape = Utils.GetRandomShape();
-                randomShape.SetBoard(this, Utils.GetRandomColor(), Utils.GetDefaultCenter(this, randomShape.adjacent));
-                AddShape(Utils.GetRandomShape());
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Shape randomShape = Utils.GetRandomShape(this);
+                sw.Stop();
+                Console.WriteLine("Finished initializing shape with " + sw.ElapsedMilliseconds);
+
+                AddShape(randomShape);
             }
 
             // Verify if there are blocks in the first row, if so player loses
@@ -219,6 +224,7 @@ namespace TetrisGame.game {
         public void ResetMap() {
             BlockArray = new Block[SizeX / Block.Size, SizeY / Block.Size];
             HasLost = false;
+            Console.WriteLine("Resetting map.");
         }
 
         public void IncreaseSpeed(int speed) {

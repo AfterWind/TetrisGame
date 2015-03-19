@@ -137,12 +137,7 @@ namespace TetrisGame.game {
                     }
                 }
             } else {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
                 Shape randomShape = Utils.GetRandomShape(this);
-                sw.Stop();
-                Console.WriteLine("Finished initializing shape with " + sw.ElapsedMilliseconds);
-
                 AddShape(randomShape);
             }
 

@@ -27,17 +27,11 @@ namespace TetrisGame.game {
         }
 
         public static Point GetDefaultCenter(Board board, params int[] adjacent) {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             int minY = 0;
             for (int i = 1; i < adjacent.Length; i += 2) {
                 if (minY > adjacent[i])
                     minY = adjacent[i];
             }
-            sw.Stop();
-            Console.WriteLine("Finished getting center with " + sw.ElapsedMilliseconds);
-        
             return new Point(board.PosX + board.SizeX / 2, minY * (-1) * Block.Size + board.PosY);
         }
 

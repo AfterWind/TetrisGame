@@ -18,15 +18,7 @@ namespace TetrisGame.game {
         public Shape(Board board, params int[] adjacent) : this(board, Utils.GetRandomColor(), Utils.GetDefaultCenter(board, adjacent), adjacent) { }
         public Shape(Board board, Color color, Point centerPoint, params int[] adjacent) {
             this.Board = board;
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            
             this.Center = new Block(board, color, centerPoint.X, centerPoint.Y);
-
-            sw.Stop();
-            Console.WriteLine("Finished initializing board and center with " + sw.ElapsedMilliseconds);
-        
 
             this.BlockList = new List<Block>();
             BlockList.Add(Center);

@@ -13,10 +13,13 @@ namespace TetrisGame {
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private SpriteFont spriteFont;
         private BasicEffect basicEffect;
         private KeyboardState oldState;
 
         private Texture2D background;
+
+        private bool gameStarted;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -34,6 +37,7 @@ namespace TetrisGame {
             base.Initialize();
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
+            gameStarted = false;
         }   
 
         /// <summary>
@@ -48,6 +52,7 @@ namespace TetrisGame {
             basicEffect = new BasicEffect(GraphicsDevice);
 
             background = this.Content.Load<Texture2D>("bg");
+            spriteFont = this.Content.Load<SpriteFont>("CourierNew");
             // TODO: use this.Content to load your game content here
         }
 
@@ -69,16 +74,18 @@ namespace TetrisGame {
             // TODO: Add your update logic here
             Stopwatch sw = new Stopwatch();
             sw.Start();
-
-            foreach (Board board in GameObjects.Boards) {
-                board.Update();
-                if (board.HasLost) {
-                    board.ResetMap();
+            if (gameStarted) {
+                foreach (Board board in GameObjects.Boards) {
+                    board.Update();
+                    if (board.HasLost) {
+                        board.ResetMap();
+                    }
                 }
             }
 
             GetInput();
             base.Update(gameTime);
+            
             sw.Stop();
             Console.WriteLine("Finished tick with " + sw.ElapsedMilliseconds);
             if(sw.ElapsedMilliseconds > 17)

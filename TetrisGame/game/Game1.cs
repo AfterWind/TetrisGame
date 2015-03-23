@@ -36,8 +36,8 @@ namespace TetrisGame {
             // TODO: Add your initialization logic here
             base.Initialize();
             graphics.PreferredBackBufferHeight = 720;
-            graphics.PreferredBackBufferWidth = 1280;
-            gameStarted = false;
+            graphics.PreferredBackBufferWidth = 1600;
+            gameStarted = true;
         }   
 
         /// <summary>
@@ -48,11 +48,11 @@ namespace TetrisGame {
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            GameObjects.Init(Content);
+            GameObjects.Init(Content, GraphicsDevice);
             basicEffect = new BasicEffect(GraphicsDevice);
 
             background = this.Content.Load<Texture2D>("bg");
-            spriteFont = this.Content.Load<SpriteFont>("CourierNew");
+            //spriteFont = this.Content.Load<SpriteFont>("CourierNew");
             // TODO: use this.Content to load your game content here
         }
 
@@ -108,7 +108,7 @@ namespace TetrisGame {
                         case Keys.Escape:
                             this.Exit();
                             break;
-                        case Keys.D:
+                        case Keys.L:
                             GameObjects.GetBoard().PrintMap();
                             break;
                         case Keys.R:
@@ -140,6 +140,12 @@ namespace TetrisGame {
                             case Keys.P:
                                 GameObjects.GetBoard().Paused = GameObjects.GetBoard().Paused ? false : true;
                                 break;
+                            case Keys.D:
+                                GameObjects.SelectNextBoard();
+                                break;
+                            case Keys.A:
+                                GameObjects.SelectPreviousBoard();
+                                break;
                         }
                     }
                 }
@@ -152,7 +158,8 @@ namespace TetrisGame {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
-
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // These three lines are required if you use SpriteBatch, to reset the states that it sets
@@ -191,6 +198,8 @@ namespace TetrisGame {
                 //spriteBatch.End();
                 base.Draw(gameTime);
             }
+            sw.Stop();
+            Console.WriteLine("Finished drawing with " + sw.ElapsedMilliseconds);
 
         }
     }

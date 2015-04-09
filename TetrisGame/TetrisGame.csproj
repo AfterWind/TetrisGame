@@ -47,11 +47,15 @@
   <ItemGroup>
     <Compile Include="game\Block.cs" />
     <Compile Include="game\Board.cs" />
+    <Compile Include="game\screen\AdvanceButton.cs" />
+    <Compile Include="game\screen\Button.cs" />
     <Compile Include="game\Game1.cs" />
     <Compile Include="game\GameObjects.cs" />
-    <Compile Include="game\GraphicUtils.cs" />
+    <Compile Include="game\utils\GraphicUtils.cs" />
     <Compile Include="game\Shape.cs" />
-    <Compile Include="game\Utils.cs" />
+    <Compile Include="game\screen\ButtonScreen.cs" />
+    <Compile Include="game\utils\TreeList.cs" />
+    <Compile Include="game\utils\Utils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -64,6 +68,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="Content\CourierNew.spritefont">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Test.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

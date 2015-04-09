@@ -13,7 +13,6 @@ namespace TetrisGame {
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private SpriteFont spriteFont;
         private BasicEffect basicEffect;
         private KeyboardState oldState;
 
@@ -37,7 +36,7 @@ namespace TetrisGame {
             base.Initialize();
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1600;
-            gameStarted = true;
+            gameStarted = false;
         }   
 
         /// <summary>
@@ -50,7 +49,6 @@ namespace TetrisGame {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameObjects.Init(Content, GraphicsDevice);
             basicEffect = new BasicEffect(GraphicsDevice);
-
             background = this.Content.Load<Texture2D>("bg");
             //spriteFont = this.Content.Load<SpriteFont>("CourierNew");
             // TODO: use this.Content to load your game content here
@@ -187,15 +185,18 @@ namespace TetrisGame {
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes) {
                 pass.Apply();
-                //spriteBatch.Begin();
                 spriteBatch.Begin();
                 spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                 spriteBatch.End();
-                foreach (Board board in GameObjects.Boards)
-                    board.Draw(spriteBatch, GraphicsDevice);
-                
+                if (gameStarted) {
+                    foreach (Board board in GameObjects.Boards)
+                        board.Draw(spriteBatch, GraphicsDevice);
+                } else {
+                    // Draw title screen
+                    GameObjects.ButtonScreenTree.Root.Draw(spriteBatch);
+                }
 
-                //spriteBatch.End();
+                
                 base.Draw(gameTime);
             }
             sw.Stop();

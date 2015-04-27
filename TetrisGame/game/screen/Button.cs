@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace TetrisGame.game {
     public abstract class Button {
         public const int SizeX = 300, SizeY = 50, BorderSize = 5;
-        public static Color buttonColor = Color.ForestGreen, textColor = Color.Coral;
+        public static Color buttonColor = Color.Orange, textColor = Color.Blue;
 
         public string Text { protected set; get; }
         public Color BorderColor { set; get; }

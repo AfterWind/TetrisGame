@@ -37,7 +37,7 @@ namespace TetrisGame.game {
                 //Console.WriteLine("Button size: " + Button.SizeX + ", " + Button.SizeY);
 
                 GraphicUtils.DrawRectangle(batch, Button.buttonColor, x, y, Button.SizeX, Button.SizeY);
-                GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x - Button.BorderSize, y - Button.BorderSize, Button.SizeX + 2 * Button.BorderSize, Button.SizeY + 2 * Button.BorderSize, Button.BorderSize);
+                GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, Button.SizeX, Button.SizeY, Button.BorderSize);
                 GraphicUtils.DrawString(batch, Button.textColor, textPos, buttons[i].Text);
             }
         }

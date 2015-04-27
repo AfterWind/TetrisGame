@@ -47,7 +47,7 @@ namespace TetrisGame {
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            GameObjects.Init(Content, GraphicsDevice);
+            GameObjects.Init(Content, GraphicsDevice, this);
             basicEffect = new BasicEffect(GraphicsDevice);
             background = this.Content.Load<Texture2D>("bg");
             //spriteFont = this.Content.Load<SpriteFont>("CourierNew");
@@ -72,6 +72,7 @@ namespace TetrisGame {
             // TODO: Add your update logic here
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            GetInput();
             if (gameStarted) {
                 foreach (Board board in GameObjects.Boards) {
                     board.Update();
@@ -81,7 +82,7 @@ namespace TetrisGame {
                 }
             }
 
-            GetInput();
+            
             base.Update(gameTime);
             
             sw.Stop();
@@ -90,7 +91,7 @@ namespace TetrisGame {
                 Console.WriteLine("Breakpoint.");
         }
 
-        protected bool WasKeyPressed(Keys key) {
+        public bool WasKeyPressed(Keys key) {
             foreach (Keys k in oldState.GetPressedKeys()) {
                 if (k == key)
                     return true;
@@ -146,7 +147,9 @@ namespace TetrisGame {
                                 break;
                         }
                     }
+                    
                 }
+                GameObjects.OnKeyPressed(currentState);
             }
             oldState = currentState;
         }
@@ -193,9 +196,8 @@ namespace TetrisGame {
                         board.Draw(spriteBatch, GraphicsDevice);
                 } else {
                     // Draw title screen
-                    GameObjects.ButtonScreenTree.Root.Draw(spriteBatch);
+                    GameObjects.CurrentButtonScreen.Draw(spriteBatch);
                 }
-
                 
                 base.Draw(gameTime);
             }

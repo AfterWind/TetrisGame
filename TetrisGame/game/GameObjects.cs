@@ -8,34 +8,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TetrisGame.game;
+using TetrisGame.game.screen;
 using TetrisGame.game.utils;
 
 namespace TetrisGame {
     public class GameObjects {
 
+        public static Game1 Game { private set; get; }
         public static Color FromColor { private set; get; }
         public static ContentManager Content { private set; get; }
         public static GraphicsDevice GraphicsDevice { private set; get; }
-        public static TreeList<ButtonScreen> ButtonScreenTree { private set; get; } 
+        public static TreeList<ButtonScreen> ButtonScreenTree { private set; get; }
+        public static ButtonScreen CurrentButtonScreen { set; get; }
 
         private static Board[] boards;
         
-        public static void Init(ContentManager content, GraphicsDevice device) {
+        public static void Init(ContentManager content, GraphicsDevice device, Game1 game) {
             Content = content;
             GraphicsDevice = device;
+            Game = game;
             FromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
             GraphicUtils.font = content.Load<SpriteFont>("Test");
             GraphicUtils.pixel = new Texture2D(device, 1, 1);
+            
+            ButtonScreen options = new ButtonScreen(new QuitButton("Ceva"));
+            ButtonScreen difficulty = new ButtonScreen();
+            ButtonScreen bs = new ButtonScreen(new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
 
-            ButtonScreen bs = new ButtonScreen(new Button("Hello", test), new Button("Yo", test));
+            CurrentButtonScreen = bs;
 
             ButtonScreenTree = new TreeList<ButtonScreen>(bs);
-
-            
+            AddChild(options, bs);
+            AddChild(difficulty, bs);
         }
 
-        public static void test(Keys k) {
-
+        public static void AddChild(ButtonScreen child, ButtonScreen parent) {
+            ButtonScreenTree.AddChild(parent, child);
+            child.buttons.Add(new BackButton(parent));
         }
 
         public static Board[] Boards {
@@ -76,11 +85,10 @@ namespace TetrisGame {
         public static bool IsBoardSelected(Board board) {
             return board == boards[selectedBoard];
         }
-        
 
-
-        public static void Update(SpriteBatch batch) {
-            
+        public static void OnKeyPressed(KeyboardState keys)
+        {
+             CurrentButtonScreen.OnKeyboardPress(keys);
         }
 
         

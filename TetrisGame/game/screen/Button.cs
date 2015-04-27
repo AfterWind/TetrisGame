@@ -8,30 +8,57 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TetrisGame.game {
-    public class Button {
+    public abstract class Button {
         public const int SizeX = 300, SizeY = 50, BorderSize = 5;
-        public static Color buttonColor = Color.Gray, textColor = Color.Blue;
+        public static Color buttonColor = Color.ForestGreen, textColor = Color.Coral;
 
         public string Text { protected set; get; }
-        public Color BorderColor { protected set; get; }
-
-        public delegate void OnClicked(Keys key);
-        public OnClicked handler;
+        public Color BorderColor { set; get; }
 
         public Button() { 
         }
 
-        public Button(string text, OnClicked handler) {
+        public Button(string text) {
             this.Text = text;
-            this.handler = handler;
         }
 
-        public void OnSelected() {
-            BorderColor = Color.White;
+        public abstract void OnClicked();
+    }
+
+    public class QuitButton : Button {
+        public QuitButton(String text) : base(text) { }
+
+        public override void OnClicked() {
+            GameObjects.Game.Exit();
+        }
+    }
+
+    public class AdvanceButton : Button {
+
+        public ButtonScreen NextScreen { private set; get; }
+
+        public AdvanceButton(string text, ButtonScreen nextScreen) {
+            this.Text = text;
+            this.NextScreen = nextScreen;
         }
 
-        public void OnUnselected() {
-            BorderColor = Color.Black;
+        public override void OnClicked() {
+            GameObjects.CurrentButtonScreen = NextScreen;
         }
+    }
+
+    public class BackButton : Button {
+
+        public ButtonScreen PrevScreen { private set; get; }
+
+        public BackButton(ButtonScreen prevScreen) {
+            PrevScreen = prevScreen;
+            this.Text = "Back";
+        }
+
+        public override void OnClicked() {
+            GameObjects.CurrentButtonScreen = PrevScreen;
+        }
+
     }
 }

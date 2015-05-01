@@ -15,11 +15,15 @@ namespace TetrisGame.game {
         public int PosX { private set; get; }
         public int PosY { private set; get; }
         public int Level {private set; get; }
+        public int BoxX { private set; get; }
+        public int BoxY { private set; get; }
         
         public int SpeedIncrease { private set; get; }
         public int SpeedIncreaseDebug { private set; get; }
 
         public Block[,] BlockArray { private set; get; }
+        public int Rows { private set; get; }
+        public int Columns { private set; get; }
         public bool HasLost { private set; get; }
 
         public int Speed {
@@ -32,7 +36,8 @@ namespace TetrisGame.game {
         private static readonly int BORDER_SIZE = 5;
         private static readonly Color BORDER_COLOR = Color.Black;
 
-        private static readonly int DIFFX_NEXT_SHAPE = 50;
+        private static readonly Color GRID_COLOR = Color.DarkBlue;
+
         private static readonly int DIFFY_NEXT_SHAPE = 30;
         private static readonly int BOX_SIZE = 150;
 
@@ -54,16 +59,23 @@ namespace TetrisGame.game {
             this.PosY = posY;
             this.RemovingRows = new int[rows];
             this.RemovingRowProgress = new int[rows];
+            this.Rows = rows;
+            this.Columns = columns;
+            this.BoxX = posX + SizeX / 2 - BOX_SIZE / 2;
+            this.BoxY = posY + SizeY + DIFFY_NEXT_SHAPE + 2 * BORDER_SIZE;
         }
 
         public void AddShape(Shape shape) {
             this.SpeedIncrease = 0;
-            shape.MoveTo(PosX + SizeX / 2 - Block.Size / 2, PosY + SizeY + DIFFY_NEXT_SHAPE + BOX_SIZE / 2);
+            bool isEvenX = shape.SizeX / Block.Size % 2 == 0, isEvenY = shape.SizeY / Block.Size % 2 == 0; 
+            
+            
+            shape.MoveTo((BoxX + BOX_SIZE / 2) - (isEvenX ? 0 : Block.Size / 2), (BoxY + BOX_SIZE / 2) - (isEvenY ? 0 : Block.Size / 2));
+            //shape.MoveTo((BoxX + BOX_SIZE / 2) + (shape.SizeX / 2) - (shape.Base.X - PosX), (BoxY + BOX_SIZE / 2) + (shape.SizeY / 2) - (shape.Base.Y - PosY));
             if(nextShape != null)
-                nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.BlockList, nextShape.Center));
+                nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.BlockList, nextShape.Base));
             this.movingShape = nextShape;
             this.nextShape = shape;
-            Console.WriteLine("Added shape.");
         }
 
         public void Draw(SpriteBatch batch, GraphicsDevice device) {
@@ -97,21 +109,47 @@ namespace TetrisGame.game {
             GraphicUtils.DrawBorder(batch, GameObjects.IsBoardSelected(this) ? Color.White : Color.Black, PosX + SizeX / 2 - BOX_SIZE / 2, PosY + SizeY + 2 * BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE, BORDER_SIZE);
             GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX + SizeX/2 - BOX_SIZE / 2, PosY + SizeY + 2*BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE);
 
-            batch.Begin();
+            // Draw the grid
+            if (Config.isGridEnabled) {
+                batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+                Texture2D pixel = new Texture2D(GameObjects.GraphicsDevice, 1, 1);
+                pixel.SetData(new Color[] { GRID_COLOR });
+                for (int i = 0; i <= Columns; i++) {
+                    if (i == 0) {
+                        batch.Draw(pixel, new Rectangle(PosX, PosY, 1, SizeY), Color.White);
+                    } else if (i == Columns) {
+                        batch.Draw(pixel, new Rectangle(PosX + SizeX - 1, PosY, 1, SizeY), Color.White);
+                    } else {
+                        batch.Draw(pixel, new Rectangle(PosX + i * Block.Size, PosY, 1, SizeY), Color.White);
+                        batch.Draw(pixel, new Rectangle(PosX + i * Block.Size - 1, PosY, 1, SizeY), Color.White);
+                    }
+                }
+
+
+                for (int i = 0; i <= Rows; i++) {
+                    if (i == 0) {
+                        batch.Draw(pixel, new Rectangle(PosX, PosY, SizeX, 1), Color.White);
+                    } else if (i == Rows) {
+                        batch.Draw(pixel, new Rectangle(PosX, PosY + SizeY - 1, SizeX, 1), Color.White);
+                    } else {
+                        batch.Draw(pixel, new Rectangle(PosX, PosY + i * Block.Size, SizeX, 1), Color.White);
+                        batch.Draw(pixel, new Rectangle(PosX, PosY + i * Block.Size - 1, SizeX, 1), Color.White);
+                    }
+                }
+                batch.End();
+            }
+
             // Draw all the blocks
+            batch.Begin();
             foreach (Block block in BlockArray) {
                 if (block != null) {
                     block.Draw(batch);
                 }
             }
-            // Draw the moving shape
             if (movingShape != null)
                 movingShape.Draw(batch);
-            
-            // Draw the next shape
             if (nextShape != null)
                 nextShape.Draw(batch);
-
             batch.End();    
         }
 

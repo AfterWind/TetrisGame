@@ -11,20 +11,39 @@ namespace TetrisGame.game {
     public class Shape {
 
         public List<Block> BlockList { private set; get; }
-        public Block Center { private set; get; }
+        public Block Base { private set; get; }
         public Board Board { private set; get; }
+        public Point Middle { private set; get; }
         public bool isSymmetrical { private set; get; }
+        public int SizeX { private set; get; }
+        public int SizeY { private set; get; }
 
         public Shape(Board board, params int[] adjacent) : this(board, Utils.GetRandomColor(), Utils.GetDefaultCenter(board, adjacent), adjacent) { }
         public Shape(Board board, Color color, Point centerPoint, params int[] adjacent) {
             this.Board = board;
-            this.Center = new Block(board, color, centerPoint.X, centerPoint.Y);
+            this.Base = new Block(board, color, centerPoint.X, centerPoint.Y);
+
+            // All these are used for calculating the size of the shape in pixels
+            int xMin = 100, xMax = -100, yMin = 100, yMax = -100;
 
             this.BlockList = new List<Block>();
-            BlockList.Add(Center);
+            BlockList.Add(Base);
             for (int i = 0; i < adjacent.Length; i += 2) {
                 BlockList.Add(new Block(board, color, centerPoint.X + adjacent[i] * Block.Size, centerPoint.Y + adjacent[i + 1] * Block.Size));
+                if (adjacent[i] < xMin)
+                    xMin = adjacent[i];
+                if (adjacent[i] > xMax)
+                    xMax = adjacent[i];
+                if (adjacent[i + 1] < yMin)
+                    yMin = adjacent[i + 1];
+                if (adjacent[i + 1] > yMax)
+                    yMax = adjacent[i + 1];
             }
+
+            SizeX = (xMax - xMin + 1) * Block.Size;
+            SizeY = (yMax - yMin + 1) * Block.Size;
+
+            Middle = new Point(centerPoint.X - (xMin * Block.Size) + SizeX / 2, centerPoint.Y - (yMin * Block.Size) + SizeY / 2);
             
             this.isSymmetrical = Utils.IsSymmetrical(BlockList);
         }
@@ -42,6 +61,8 @@ namespace TetrisGame.game {
         }
 
         public void Move(int offX, int offY) {
+            Middle = new Point(Middle.X + offX, Middle.Y + offY);
+            
             foreach (Block block in BlockList) {
                 block.Move(offX, offY);
             }
@@ -52,12 +73,13 @@ namespace TetrisGame.game {
         }
 
         public void MoveTo(int x, int y) {
-            int centerX = Center.X;
-            int centerY = Center.Y;
+            int centerX = Base.X;
+            int centerY = Base.Y;
             foreach (Block block in BlockList) {
                 block.X = x + (block.X - centerX);
                 block.Y = y + (block.Y - centerY);
             }
+            Middle = new Point(x, y);
         }
 
         public bool MoveCheckX(int offX) {
@@ -120,7 +142,7 @@ namespace TetrisGame.game {
             for (; i < BlockList.Count; i++ ) {
 
                 Point rotatedPoint;
-                Point translationCoordinate = new Point(BlockList[i].X - Center.X, BlockList[i].Y - Center.Y);
+                Point translationCoordinate = new Point(BlockList[i].X - Base.X, BlockList[i].Y - Base.Y);
 
                 translationCoordinate.Y *= -1;
 
@@ -131,8 +153,8 @@ namespace TetrisGame.game {
 
                 rotatedPoint.Y *= -1;
 
-                rotatedPoint.X += Center.X;
-                rotatedPoint.Y += Center.Y;
+                rotatedPoint.X += Base.X;
+                rotatedPoint.Y += Base.Y;
                 
                 if (Utils.IsPositionValid(Board, rotatedPoint.X, rotatedPoint.Y)) {
                     rotatedCoordinates[i] = new Point(rotatedPoint.X, rotatedPoint.Y);

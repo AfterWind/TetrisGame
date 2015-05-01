@@ -11,63 +11,55 @@ namespace TetrisGame {
     /// </summary>
     public class Game1 : Game {
 
-        private GraphicsDeviceManager graphics;
+        public GraphicsDeviceManager graphics;
+        public bool gameStarted;
+        
         private SpriteBatch spriteBatch;
         private BasicEffect basicEffect;
         private KeyboardState oldState;
 
         private Texture2D background;
 
-        private bool gameStarted;
+        
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
+
         protected override void Initialize() {
             // TODO: Add your initialization logic here
             base.Initialize();
-            graphics.PreferredBackBufferHeight = 720;
-            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = GraphicUtils.screenHeight;
+            graphics.PreferredBackBufferWidth = GraphicUtils.screenWidth;
             gameStarted = false;
-        }   
+            InitializeScreen();
+        }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-        /// 
+        private void InitializeScreen() {
+            Type type = typeof(OpenTKGameWindow);
+            System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(Window);
+            if (window != null) {
+                window.X = (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - graphics.PreferredBackBufferWidth) / 2;
+                window.Y = (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - graphics.PreferredBackBufferHeight) / 2 - 50;
+            }
+        }
+
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameObjects.Init(Content, GraphicsDevice, this);
             basicEffect = new BasicEffect(GraphicsDevice);
             background = this.Content.Load<Texture2D>("bg");
-            //spriteFont = this.Content.Load<SpriteFont>("CourierNew");
             // TODO: use this.Content to load your game content here
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-       
         protected override void Update(GameTime gameTime) {
             // TODO: Add your update logic here
             Stopwatch sw = new Stopwatch();
@@ -77,11 +69,11 @@ namespace TetrisGame {
                 foreach (Board board in GameObjects.Boards) {
                     board.Update();
                     if (board.HasLost) {
+                        // TODO: Set up lose condition
                         board.ResetMap();
                     }
                 }
             }
-
             
             base.Update(gameTime);
             
@@ -145,6 +137,9 @@ namespace TetrisGame {
                             case Keys.A:
                                 GameObjects.SelectPreviousBoard();
                                 break;
+                            case Keys.G:
+                                Config.isGridEnabled = !Config.isGridEnabled;
+                                break;
                         }
                     }
                     
@@ -154,10 +149,6 @@ namespace TetrisGame {
             oldState = currentState;
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
             Stopwatch sw = new Stopwatch();
             sw.Start();

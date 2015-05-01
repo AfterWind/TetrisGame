@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public abstract class Button {
-        public const int SizeX = 300, SizeY = 50, BorderSize = 5;
+        public const int SizeX = 300, SizeY = 40, BorderSize = 5;
         public static Color buttonColor = Color.Orange, textColor = Color.Blue;
 
         public string Text { protected set; get; }
@@ -37,8 +37,7 @@ namespace TetrisGame.game {
 
         public ButtonScreen NextScreen { private set; get; }
 
-        public AdvanceButton(string text, ButtonScreen nextScreen) {
-            this.Text = text;
+        public AdvanceButton(string text, ButtonScreen nextScreen) : base(text) {
             this.NextScreen = nextScreen;
         }
 
@@ -47,18 +46,28 @@ namespace TetrisGame.game {
         }
     }
 
-    public class BackButton : Button {
+    public class BackButton : AdvanceButton {
+        public BackButton(ButtonScreen prevScreen) : base("Back", prevScreen) { }
+    }
 
-        public ButtonScreen PrevScreen { private set; get; }
+    public class StartButton : Button {
+        public StartButton(string text) : base(text) { }
 
-        public BackButton(ButtonScreen prevScreen) {
-            PrevScreen = prevScreen;
-            this.Text = "Back";
+        public override void OnClicked() {
+            GameObjects.StartGame();
+        }
+    }
+
+    public class DifficultyButton : StartButton {
+        private Difficulty diff;
+        
+        public DifficultyButton(Difficulty diff) : base(diff.GetText()) {
+            this.diff = diff;
         }
 
         public override void OnClicked() {
-            GameObjects.CurrentButtonScreen = PrevScreen;
+            GameObjects.SetDifficulty(diff);
+            base.OnClicked();
         }
-
     }
 }

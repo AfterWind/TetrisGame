@@ -11,9 +11,10 @@ namespace TetrisGame.game {
 
         public static Texture2D pixel;
         public static SpriteFont font;
+        public static int screenWidth = 1600;
+        public static int screenHeight = 720;
 
         public static void DrawBorder(SpriteBatch batch, Color color, int posX, int posY, int sizeX, int sizeY, int borderSize) {
-            
             pixel.SetData(new Color[] { color });
             batch.Begin();
             batch.Draw(pixel, new Rectangle(posX - borderSize, posY - borderSize, borderSize, sizeY + borderSize), Color.White);

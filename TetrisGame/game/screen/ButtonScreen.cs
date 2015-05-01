@@ -9,18 +9,29 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public class ButtonScreen {
-        public static int Distance = 25;
-        public static int ButtonsPosStartX = 30, ButtonPosStartY = 40;
+        public static readonly Color TITLE_TEXT_COLOR = Color.White;
         
+        public static int Distance = 25;
+        public static int ButtonsPosStartX = (GraphicUtils.screenWidth - Button.SizeX) / 2, ButtonPosStartY = 280;
+
         public List<Button> buttons = new List<Button>();
 
         private int selected = 0;
+        private string title;
 
         public ButtonScreen(params Button[] buttons) {
             this.buttons.AddRange(buttons);
         }
 
+        public ButtonScreen(string title, params Button[] buttons) : this(buttons) {
+            this.title = title;
+        }
+
         public void Draw(SpriteBatch batch) {
+            if (title != null) {
+                Vector2 dim = GraphicUtils.font.MeasureString(title);
+                GraphicUtils.DrawString(batch, TITLE_TEXT_COLOR, new Vector2((GraphicUtils.screenWidth - dim.X) / 2, 150), title);
+            }
             for(int i = 0; i < buttons.Count; i++) {
                 int x = ButtonsPosStartX, y = ButtonPosStartY + i * (Button.SizeY + Distance);
                 Vector2 textPos = GraphicUtils.font.MeasureString(buttons[i].Text) / 2;

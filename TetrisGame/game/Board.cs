@@ -14,9 +14,10 @@ namespace TetrisGame.game {
         public int SizeY { private set; get; }
         public int PosX { private set; get; }
         public int PosY { private set; get; }
-        public int Level {private set; get; }
         public int BoxX { private set; get; }
         public int BoxY { private set; get; }
+
+        public int RowsCleared { private set; get; }
         
         public int SpeedIncrease { private set; get; }
         public int SpeedIncreaseDebug { private set; get; }
@@ -28,7 +29,7 @@ namespace TetrisGame.game {
 
         public int Speed {
             get {
-                return Paused ? 0 : INITIAL_SPEED + (Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
+                return Paused ? 0 : INITIAL_SPEED + (GameObjects.Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
             }
         }
         public bool Paused { set; get; }
@@ -79,24 +80,6 @@ namespace TetrisGame.game {
         }
 
         public void Draw(SpriteBatch batch, GraphicsDevice device) {
-            // Draw the borders
-            /*
-             * TODO: Experiment with this more, so that it works more efficiently
-            short[] indices = new short[4];
-            VertexPositionColor[] points = new VertexPositionColor[4];
-
-            points[0] = new VertexPositionColor(new Vector3(PosX - BORDER_SIZE / 2, PosY - BORDER_SIZE / 2, 0), BORDER_COLOR);
-            points[1] = new VertexPositionColor(new Vector3(Po6sX + SizeX + BORDER_SIZE / 2, PosY - BORDER_SIZE / 2, 0), BORDER_COLOR);
-            points[2] = new VertexPositionColor(new Vector3(PosX + SizeX + BORDER_SIZE / 2, PosY + SizeY + BORDER_SIZE / 2, 0), BORDER_COLOR);
-            points[3] = new VertexPositionColor(new Vector3(PosX - BORDER_SIZE / 2, PosY + SizeY + BORDER_SIZE / 2, 0), BORDER_COLOR);
-
-            for (short i = 0; i < 4; i++) {
-                indices[i] = i;
-            }
-            
-            device.DrawUserIndexedPrimitives<VertexPositionColor> (PrimitiveType.LineList, points, 0, 4, indices, 0, 3);
-            */
-
 
             // Draw the borders less efficient
 
@@ -252,6 +235,7 @@ namespace TetrisGame.game {
                     }
                 }
             }
+            GameObjects.IncreaseRowsCleared();
         }
         
         public void ResetMap() {

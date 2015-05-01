@@ -20,6 +20,9 @@ namespace TetrisGame {
         
         public static Difficulty Difficulty { private set; get; }
 
+        public static int Level { private set; get; }
+        public static int RowsCleared { private set; get; }
+
         private static Board[] boards;
         public static Board[] Boards {
             get {
@@ -31,6 +34,8 @@ namespace TetrisGame {
                 boards = value;
             }
         }
+
+        private static int selectedBoard = 0;
 
         public static void InitBoards() {
             int nrBoards = Difficulty.GetNumberOfBoards();
@@ -67,8 +72,13 @@ namespace TetrisGame {
             InitBoards();
         }
 
+        public static void IncreaseRowsCleared() {
+            RowsCleared++;
+            if (RowsCleared % 10 == 0)
+                Level++;
+        }
 
-        private static int selectedBoard = 0;
+        
         public static void SelectNextBoard() {
             selectedBoard++;
             if (selectedBoard == 4)

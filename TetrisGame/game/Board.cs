@@ -69,10 +69,7 @@ namespace TetrisGame.game {
         public void AddShape(Shape shape) {
             this.SpeedIncrease = 0;
             bool isEvenX = shape.SizeX / Block.Size % 2 == 0, isEvenY = shape.SizeY / Block.Size % 2 == 0; 
-            
-            
             shape.MoveTo((BoxX + BOX_SIZE / 2) - (isEvenX ? 0 : Block.Size / 2), (BoxY + BOX_SIZE / 2) - (isEvenY ? 0 : Block.Size / 2));
-            //shape.MoveTo((BoxX + BOX_SIZE / 2) + (shape.SizeX / 2) - (shape.Base.X - PosX), (BoxY + BOX_SIZE / 2) + (shape.SizeY / 2) - (shape.Base.Y - PosY));
             if(nextShape != null)
                 nextShape.MoveTo(Utils.GetDefaultCenter(this, nextShape.BlockList, nextShape.Base));
             this.movingShape = nextShape;
@@ -81,16 +78,13 @@ namespace TetrisGame.game {
 
         public void Draw(SpriteBatch batch, GraphicsDevice device) {
 
-            // Draw the borders less efficient
-
+            
             GraphicUtils.DrawBorder(batch, GameObjects.IsBoardSelected(this) ? Color.White : Color.Black, PosX, PosY, SizeX, SizeY, BORDER_SIZE);
             GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX, PosY, SizeX, SizeY);
-            
-            
-            //GraphicUtils.DrawRectangle(batch, , PosX, PosY, )
 
             GraphicUtils.DrawBorder(batch, GameObjects.IsBoardSelected(this) ? Color.White : Color.Black, PosX + SizeX / 2 - BOX_SIZE / 2, PosY + SizeY + 2 * BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE, BORDER_SIZE);
             GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX + SizeX/2 - BOX_SIZE / 2, PosY + SizeY + 2*BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE);
+            
 
             // Draw the grid
             if (Config.isGridEnabled) {

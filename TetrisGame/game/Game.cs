@@ -9,7 +9,7 @@ namespace TetrisGame {
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Game {
+    public class TetrisGame : Game {
 
         public GraphicsDeviceManager graphics;
         public bool gameStarted;
@@ -20,7 +20,7 @@ namespace TetrisGame {
 
         private Texture2D background;
 
-        public Game1() {
+        public TetrisGame() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -29,13 +29,13 @@ namespace TetrisGame {
         protected override void Initialize() {
             // TODO: Add your initialization logic here
             base.Initialize();
-            graphics.PreferredBackBufferHeight = GraphicUtils.screenHeight;
-            graphics.PreferredBackBufferWidth = GraphicUtils.screenWidth;
             gameStarted = false;
             InitializeScreen();
         }
 
         private void InitializeScreen() {
+            graphics.PreferredBackBufferHeight = GraphicUtils.screenHeight;
+            graphics.PreferredBackBufferWidth = GraphicUtils.screenWidth;
             Type type = typeof(OpenTKGameWindow);
             System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(Window);

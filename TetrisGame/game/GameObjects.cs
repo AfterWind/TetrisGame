@@ -12,7 +12,7 @@ using TetrisGame.game;
 namespace TetrisGame {
     public class GameObjects {
 
-        public static Game1 Game { private set; get; }
+        public static TetrisGame Game { private set; get; }
         public static Color FromColor { private set; get; }
         public static ContentManager Content { private set; get; }
         public static GraphicsDevice GraphicsDevice { private set; get; }
@@ -44,7 +44,7 @@ namespace TetrisGame {
                 boards[i] = new Board(i * (20 + (16 * Block.Size)) + 10, 20, 16, 20);
         }
         
-        public static void Init(ContentManager content, GraphicsDevice device, Game1 game) {
+        public static void Init(ContentManager content, GraphicsDevice device, TetrisGame game) {
             Content = content;
             GraphicsDevice = device;
             Game = game;
@@ -52,7 +52,8 @@ namespace TetrisGame {
             GraphicUtils.font = content.Load<SpriteFont>("Test");
             GraphicUtils.pixel = new Texture2D(device, 1, 1);
 
-            ButtonScreen options = new ButtonScreen(new QuitButton("Ceva"));
+            ButtonScreen options = new ButtonScreen();
+
             ButtonScreen difficulty;
             Button[] difficultyButtons = new Button[Enum.GetValues(typeof(Difficulty)).Length];
             int i = 0;

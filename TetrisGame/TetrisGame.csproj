@@ -49,7 +49,7 @@
     <Compile Include="game\Block.cs" />
     <Compile Include="game\Board.cs" />
     <Compile Include="game\screen\Button.cs" />
-    <Compile Include="game\Game1.cs" />
+    <Compile Include="game\Game.cs" />
     <Compile Include="game\GameObjects.cs" />
     <Compile Include="game\utils\GraphicUtils.cs" />
     <Compile Include="game\Shape.cs" />

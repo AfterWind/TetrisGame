@@ -93,14 +93,16 @@ namespace TetrisGame.game {
                     Move(Board.PosX + Board.SizeX - block.X - Block.Size, 0);
                     return false;
                 }
-                Block blockCheck = null;
+                Block blockCheckLower = null, blockCheckUpper = null;
                 try {
-                    blockCheck = Board.BlockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
+                    blockCheckLower = Board.BlockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY()];
+                    blockCheckUpper = Board.BlockArray[block.GetRelativeX() + Math.Sign(offX) * 1, block.GetRelativeY() + 1];
                 } catch (IndexOutOfRangeException) { }
-                if (blockCheck != null) {
-                    Move(blockCheck.X - block.X - Math.Sign(offX) * Block.Size, 0);
+                if (blockCheckLower != null || blockCheckUpper != null) {
+                    //Move(block.GetRelativeX() + Math.Sign(offX) * 1 - block.X - Math.Sign(offX) * Block.Size, 0);
                     return false;
                 }
+                
             }
 
             Move(offX, 0);

@@ -16,7 +16,7 @@ namespace TetrisGame.game {
 
         public static void DrawBorder(SpriteBatch batch, Color color, int posX, int posY, int sizeX, int sizeY, int borderSize) {
             pixel.SetData(new Color[] { color });
-            batch.Begin();
+            batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             batch.Draw(pixel, new Rectangle(posX - borderSize, posY - borderSize, borderSize, sizeY + borderSize), Color.White);
             batch.Draw(pixel, new Rectangle(posX - borderSize, posY + sizeY, sizeX + borderSize, borderSize), Color.White);
             batch.Draw(pixel, new Rectangle(posX, posY - borderSize, sizeX + borderSize, borderSize), Color.White);
@@ -25,7 +25,6 @@ namespace TetrisGame.game {
         }
 
         public static void DrawRectangle(SpriteBatch batch, Color color, int posX, int posY, int sizeX, int sizeY) {
-
             pixel.SetData(new Color[] { color });
             batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             batch.Draw(pixel, new Rectangle(posX, posY, sizeX, sizeY), Color.White);
@@ -33,7 +32,7 @@ namespace TetrisGame.game {
         }
 
         public static void DrawString(SpriteBatch batch, Color color, Vector2 pos, string text) {
-            batch.Begin();
+            batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             batch.DrawString(font, text, pos, color);
             batch.End();
         }

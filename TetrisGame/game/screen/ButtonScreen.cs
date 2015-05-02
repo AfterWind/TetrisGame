@@ -28,11 +28,12 @@ namespace TetrisGame.game {
         }
 
         public void Draw(SpriteBatch batch) {
+            
             if (title != null) {
                 Vector2 dim = GraphicUtils.font.MeasureString(title);
                 GraphicUtils.DrawString(batch, TITLE_TEXT_COLOR, new Vector2((GraphicUtils.screenWidth - dim.X) / 2, 150), title);
             }
-            for(int i = 0; i < buttons.Count; i++) {
+            for (int i = 0; i < buttons.Count; i++) {
                 int x = ButtonsPosStartX, y = ButtonPosStartY + i * (Button.SizeY + Distance);
                 Vector2 textPos = GraphicUtils.font.MeasureString(buttons[i].Text) / 2;
                 //Console.WriteLine("Text size: " + textPos);
@@ -46,11 +47,12 @@ namespace TetrisGame.game {
                 textPos.Y = Button.SizeY / 2 - textPos.Y / 2 + y;
                 //Console.WriteLine("Text position: " + textPos);
                 //Console.WriteLine("Button size: " + Button.SizeX + ", " + Button.SizeY);
-
+                
                 GraphicUtils.DrawRectangle(batch, Button.buttonColor, x, y, Button.SizeX, Button.SizeY);
                 GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, Button.SizeX, Button.SizeY, Button.BorderSize);
                 GraphicUtils.DrawString(batch, Button.textColor, textPos, buttons[i].Text);
             }
+            
         }
 
         public void OnKeyboardPress(KeyboardState keys) {

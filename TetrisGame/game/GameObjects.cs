@@ -12,6 +12,11 @@ using TetrisGame.game;
 namespace TetrisGame {
     public class GameObjects {
 
+        public static readonly int INFO_BAR_SIZE = 100;
+        public static readonly int DISTANCE_BETWEEN_BOARDS = 20;
+        public static readonly int ROWS = 20, COLUMNS = 16;
+        public static readonly int BOARDS_STARTY = 60;
+
         public static TetrisGame Game { private set; get; }
         public static Color FromColor { private set; get; }
         public static ContentManager Content { private set; get; }
@@ -41,7 +46,12 @@ namespace TetrisGame {
             int nrBoards = Difficulty.GetNumberOfBoards();
             boards = new Board[nrBoards];
             for (int i = 0; i < nrBoards; i++)
-                boards[i] = new Board(i * (20 + (16 * Block.Size)) + 10, 20, 16, 20);
+                boards[i] = new Board(GetStartX() + i * (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY, COLUMNS, ROWS);
+        }
+
+        public static int GetStartX() {
+            int nrBoards = Difficulty.GetNumberOfBoards();
+            return (GraphicUtils.screenWidth - INFO_BAR_SIZE - (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS) * nrBoards) / 2;
         }
         
         public static void Init(ContentManager content, GraphicsDevice device, TetrisGame game) {
@@ -49,7 +59,8 @@ namespace TetrisGame {
             GraphicsDevice = device;
             Game = game;
             FromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
-            GraphicUtils.font = content.Load<SpriteFont>("Test");
+            GraphicUtils.fontCommon = content.Load<SpriteFont>("SmallClassic");
+            GraphicUtils.fontTitle = content.Load<SpriteFont>("LargeClassic");
             GraphicUtils.pixel = new Texture2D(device, 1, 1);
 
             ButtonScreen options = new ButtonScreen();
@@ -62,7 +73,8 @@ namespace TetrisGame {
             }
             difficulty = new ButtonScreen(difficultyButtons);
 
-            ButtonScreen bs = new ButtonScreen("HELOOOOOoooo!", new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
+            ButtonScreen bs = new ButtonScreen(new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
+            bs.Title = "Helooooo!";
 
             CurrentButtonScreen = bs;
 
@@ -71,6 +83,16 @@ namespace TetrisGame {
 
             Difficulty = Difficulty.Normal;
             InitBoards();
+        }
+
+        public static void Draw(SpriteBatch batch) {
+            if (Game.gameStarted) {
+                // Draw the boards
+                foreach (Board board in Boards)
+                    board.Draw(batch, GraphicsDevice);
+            } else {
+                CurrentButtonScreen.Draw(batch);
+            }
         }
 
         public static void IncreaseRowsCleared() {
@@ -82,13 +104,13 @@ namespace TetrisGame {
         
         public static void SelectNextBoard() {
             selectedBoard++;
-            if (selectedBoard == 4)
+            if (selectedBoard >= boards.Length)
                 selectedBoard = 0;
         }
         public static void SelectPreviousBoard() {
             selectedBoard--;
-            if (selectedBoard == -1)
-                selectedBoard = 3;
+            if (selectedBoard < 0)
+                selectedBoard = boards.Length - 1;
         }
 
         public static Board GetBoard() {

@@ -180,14 +180,7 @@ namespace TetrisGame {
                 spriteBatch.Begin();
                 spriteBatch.Draw(background, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                 spriteBatch.End();
-                if (gameStarted) {
-                    foreach (Board board in GameObjects.Boards)
-                        board.Draw(spriteBatch, GraphicsDevice);
-                } else {
-                    // Draw title screen
-                    GameObjects.CurrentButtonScreen.Draw(spriteBatch);
-                }
-                
+                GameObjects.Draw(spriteBatch);
                 base.Draw(gameTime);
             }
             sw.Stop();

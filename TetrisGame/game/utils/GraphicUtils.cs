@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     class GraphicUtils {
+        public static readonly Color BACKGROUND_STRIP = Color.FromNonPremultiplied(0, 0, 0, 100);
 
         public static Texture2D pixel;
-        public static SpriteFont font;
+        public static SpriteFont fontCommon, fontTitle;
         public static int screenWidth = 1600;
         public static int screenHeight = 720;
 
@@ -33,7 +34,7 @@ namespace TetrisGame.game {
 
         public static void DrawString(SpriteBatch batch, Color color, Vector2 pos, string text) {
             batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            batch.DrawString(font, text, pos, color);
+            batch.DrawString(fontCommon, text, pos, color);
             batch.End();
         }
     }

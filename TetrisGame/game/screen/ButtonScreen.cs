@@ -15,27 +15,25 @@ namespace TetrisGame.game {
         public static int ButtonsPosStartX = (GraphicUtils.screenWidth - Button.SizeX) / 2, ButtonPosStartY = 280;
 
         public List<Button> buttons = new List<Button>();
-
+        public string Title { set; get; }
+        
         private int selected = 0;
-        private string title;
 
         public ButtonScreen(params Button[] buttons) {
             this.buttons.AddRange(buttons);
         }
 
-        public ButtonScreen(string title, params Button[] buttons) : this(buttons) {
-            this.title = title;
-        }
-
         public void Draw(SpriteBatch batch) {
-            
-            if (title != null) {
-                Vector2 dim = GraphicUtils.font.MeasureString(title);
-                GraphicUtils.DrawString(batch, TITLE_TEXT_COLOR, new Vector2((GraphicUtils.screenWidth - dim.X) / 2, 150), title);
+            GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, ButtonsPosStartX - 130, 0, Button.SizeX + 260, GraphicUtils.screenHeight);
+            if (Title != null) {
+                Vector2 dim = GraphicUtils.fontTitle.MeasureString(Title);
+                batch.Begin();
+                batch.DrawString(GraphicUtils.fontTitle, Title, new Vector2((GraphicUtils.screenWidth - dim.X) / 2, 150), TITLE_TEXT_COLOR);
+                batch.End();
             }
             for (int i = 0; i < buttons.Count; i++) {
                 int x = ButtonsPosStartX, y = ButtonPosStartY + i * (Button.SizeY + Distance);
-                Vector2 textPos = GraphicUtils.font.MeasureString(buttons[i].Text) / 2;
+                Vector2 textPos = GraphicUtils.fontCommon.MeasureString(buttons[i].Text);
                 //Console.WriteLine("Text size: " + textPos);
 
                 if (i == selected)
@@ -44,7 +42,7 @@ namespace TetrisGame.game {
                     buttons[i].BorderColor = Color.Black;
 
                 textPos.X = Button.SizeX / 2 - textPos.X / 2 + x;
-                textPos.Y = Button.SizeY / 2 - textPos.Y / 2 + y;
+                textPos.Y = Button.SizeY / 2 - textPos.Y / 2 + y + 2;
                 //Console.WriteLine("Text position: " + textPos);
                 //Console.WriteLine("Button size: " + Button.SizeX + ", " + Button.SizeY);
                 
@@ -52,6 +50,7 @@ namespace TetrisGame.game {
                 GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, Button.SizeX, Button.SizeY, Button.BorderSize);
                 GraphicUtils.DrawString(batch, Button.textColor, textPos, buttons[i].Text);
             }
+            
             
         }
 

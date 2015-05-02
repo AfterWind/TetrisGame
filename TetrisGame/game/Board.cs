@@ -78,13 +78,13 @@ namespace TetrisGame.game {
 
         public void Draw(SpriteBatch batch, GraphicsDevice device) {
 
+            GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, PosX - BORDER_SIZE, 0, SizeX + 2 * BORDER_SIZE, GraphicUtils.screenHeight);
             
             GraphicUtils.DrawBorder(batch, GameObjects.IsBoardSelected(this) ? Color.White : Color.Black, PosX, PosY, SizeX, SizeY, BORDER_SIZE);
             GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX, PosY, SizeX, SizeY);
 
             GraphicUtils.DrawBorder(batch, GameObjects.IsBoardSelected(this) ? Color.White : Color.Black, PosX + SizeX / 2 - BOX_SIZE / 2, PosY + SizeY + 2 * BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE, BORDER_SIZE);
             GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX + SizeX/2 - BOX_SIZE / 2, PosY + SizeY + 2*BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE);
-            
 
             // Draw the grid
             if (Config.isGridEnabled) {

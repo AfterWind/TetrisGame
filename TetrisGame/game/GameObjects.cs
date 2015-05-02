@@ -12,7 +12,7 @@ using TetrisGame.game;
 namespace TetrisGame {
     public class GameObjects {
 
-        public static readonly int INFO_BAR_SIZE = 100;
+        
         public static readonly int DISTANCE_BETWEEN_BOARDS = 20;
         public static readonly int ROWS = 20, COLUMNS = 16;
         public static readonly int BOARDS_STARTY = 60;
@@ -22,11 +22,9 @@ namespace TetrisGame {
         public static ContentManager Content { private set; get; }
         public static GraphicsDevice GraphicsDevice { private set; get; }
         public static ButtonScreen CurrentButtonScreen { set; get; }
+        public static InfoBar InfoBar { private set; get; }
         
         public static Difficulty Difficulty { private set; get; }
-
-        public static int Level { private set; get; }
-        public static int RowsCleared { private set; get; }
 
         private static Board[] boards;
         public static Board[] Boards {
@@ -41,30 +39,20 @@ namespace TetrisGame {
         }
 
         private static int selectedBoard = 0;
-
-        public static void InitBoards() {
-            int nrBoards = Difficulty.GetNumberOfBoards();
-            boards = new Board[nrBoards];
-            for (int i = 0; i < nrBoards; i++)
-                boards[i] = new Board(GetStartX() + i * (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY, COLUMNS, ROWS);
-        }
-
-        public static int GetStartX() {
-            int nrBoards = Difficulty.GetNumberOfBoards();
-            return (GraphicUtils.screenWidth - INFO_BAR_SIZE - (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS) * nrBoards) / 2;
-        }
         
         public static void Init(ContentManager content, GraphicsDevice device, TetrisGame game) {
             Content = content;
             GraphicsDevice = device;
             Game = game;
+
+
             FromColor = Color.FromNonPremultiplied(96, 96, 96, 255);
             GraphicUtils.fontCommon = content.Load<SpriteFont>("SmallClassic");
             GraphicUtils.fontTitle = content.Load<SpriteFont>("LargeClassic");
             GraphicUtils.pixel = new Texture2D(device, 1, 1);
 
-            ButtonScreen options = new ButtonScreen();
 
+            ButtonScreen options = new ButtonScreen();
             ButtonScreen difficulty;
             Button[] difficultyButtons = new Button[Enum.GetValues(typeof(Difficulty)).Length];
             int i = 0;
@@ -72,10 +60,8 @@ namespace TetrisGame {
                 difficultyButtons[i++] = new DifficultyButton(diff);
             }
             difficulty = new ButtonScreen(difficultyButtons);
-
             ButtonScreen bs = new ButtonScreen(new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
             bs.Title = "Helooooo!";
-
             CurrentButtonScreen = bs;
 
             options.buttons.Add(new BackButton(bs));
@@ -85,23 +71,33 @@ namespace TetrisGame {
             InitBoards();
         }
 
+        public static void InitBoards() {
+            int nrBoards = Difficulty.GetNumberOfBoards();
+            boards = new Board[nrBoards];
+            for (int i = 0; i < nrBoards; i++)
+                boards[i] = new Board(GetStartX() + i * (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY, COLUMNS, ROWS);
+            InfoBar = new InfoBar(GetStartX() + nrBoards * (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY);
+        }
+
+        public static int GetStartX() {
+            int nrBoards = Difficulty.GetNumberOfBoards();
+            return (GraphicUtils.screenWidth - InfoBar.INFO_BAR_SIZE - (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS) * nrBoards) / 2;
+        }
+
         public static void Draw(SpriteBatch batch) {
             if (Game.gameStarted) {
                 // Draw the boards
                 foreach (Board board in Boards)
                     board.Draw(batch, GraphicsDevice);
+
+                // Draw InfoBar
+                InfoBar.Draw(batch);
             } else {
                 CurrentButtonScreen.Draw(batch);
             }
         }
 
-        public static void IncreaseRowsCleared() {
-            RowsCleared++;
-            if (RowsCleared % 10 == 0)
-                Level++;
-        }
 
-        
         public static void SelectNextBoard() {
             selectedBoard++;
             if (selectedBoard >= boards.Length)

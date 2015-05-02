@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 namespace TetrisGame.game {
     public class ButtonScreen {
         public static readonly Color TITLE_TEXT_COLOR = Color.White;
+        public static readonly int BACKGROUND_STRIP_OFFX = 130;
+        public static readonly int MAX_TEXT_SIZE = Button.SizeX + BACKGROUND_STRIP_OFFX * 2 - 50;
         
-        public static int Distance = 25;
+        public static readonly int Distance = 25;
         public static int ButtonsPosStartX = (GraphicUtils.screenWidth - Button.SizeX) / 2, ButtonPosStartY = 280;
 
         public List<Button> buttons = new List<Button>();
@@ -24,7 +26,7 @@ namespace TetrisGame.game {
         }
 
         public void Draw(SpriteBatch batch) {
-            GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, ButtonsPosStartX - 130, 0, Button.SizeX + 260, GraphicUtils.screenHeight);
+            GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, ButtonsPosStartX - BACKGROUND_STRIP_OFFX, 0, Button.SizeX + BACKGROUND_STRIP_OFFX * 2, GraphicUtils.screenHeight);
             if (Title != null) {
                 Vector2 dim = GraphicUtils.fontTitle.MeasureString(Title);
                 batch.Begin();
@@ -50,8 +52,11 @@ namespace TetrisGame.game {
                 GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, Button.SizeX, Button.SizeY, Button.BorderSize);
                 GraphicUtils.DrawString(batch, Button.textColor, textPos, buttons[i].Text);
             }
-            
-            
+        }
+
+        public void DrawTitle(SpriteFont font) {
+            Vector2 textSize = font.MeasureString(Title);
+            //if(textSize > )
         }
 
         public void OnKeyboardPress(KeyboardState keys) {

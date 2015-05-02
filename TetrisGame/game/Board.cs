@@ -29,7 +29,7 @@ namespace TetrisGame.game {
 
         public int Speed {
             get {
-                return Paused ? 0 : INITIAL_SPEED + (GameObjects.Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
+                return Paused ? 0 : INITIAL_SPEED + (GameObjects.InfoBar.Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
             }
         }
         public bool Paused { set; get; }
@@ -180,8 +180,8 @@ namespace TetrisGame.game {
                         for (j = k - 1; j >= 0; j--) {
                             for (i = 0; i < BlockArray.GetLength(0); i++) {
                                 if (BlockArray[i, j] != null) {
-                                    BlockArray[i, j].Move(0, Block.Size);
-                                    BlockArray[i, j + 1] = BlockArray[i, j];
+                                    BlockArray[i, j].Move(0, Block.Size * 2);
+                                    BlockArray[i, j + 2] = BlockArray[i, j];
                                     BlockArray[i, j] = null;
                                 }
                             }
@@ -190,6 +190,7 @@ namespace TetrisGame.game {
                         RemovingRows[k] = 0;
                         RemovingRowProgress[k] = 0;
                     } else {
+                        BlockArray[RemovingRowProgress[k], k - 1] = null;
                         BlockArray[RemovingRowProgress[k]++, k] = null;
                     }
                 }
@@ -212,7 +213,7 @@ namespace TetrisGame.game {
             if (movingShape != null)
                 movingShape.Rotate();
         }
-
+        /*
         public void RemoveRow(int row) {
             for (int j = row; j >= 0; j--) {
                 for (int i = 0; i < BlockArray.GetLength(0); i++) {
@@ -229,8 +230,9 @@ namespace TetrisGame.game {
                     }
                 }
             }
-            GameObjects.IncreaseRowsCleared();
+            
         }
+         * */
         
         public void ResetMap() {
             BlockArray = new Block[SizeX / Block.Size, SizeY / Block.Size];

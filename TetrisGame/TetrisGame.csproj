@@ -48,6 +48,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="game\Block.cs" />
     <Compile Include="game\Board.cs" />
+    <Compile Include="game\InfoBar.cs" />
     <Compile Include="game\screen\Button.cs" />
     <Compile Include="game\Game.cs" />
     <Compile Include="game\GameObjects.cs" />

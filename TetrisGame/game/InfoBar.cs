@@ -31,7 +31,6 @@ namespace TetrisGame.game {
             Score += Level * 50;
             if (RowsCleared % 5 == 0)
                 Level++;
-            
         }
 
         public void Draw(SpriteBatch batch) {

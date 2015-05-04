@@ -37,7 +37,7 @@ namespace TetrisGame.game {
         private static readonly int BORDER_SIZE = 5;
         private static readonly Color BORDER_COLOR = Color.Black;
 
-        private static readonly Color GRID_COLOR = Color.DarkBlue;
+        private static readonly Color GRID_COLOR = Color.DarkGreen;
 
         private static readonly int DIFFY_NEXT_SHAPE = 30;
         private static readonly int BOX_SIZE = 150;
@@ -81,10 +81,10 @@ namespace TetrisGame.game {
             GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, PosX - BORDER_SIZE, 0, SizeX + 2 * BORDER_SIZE, GraphicUtils.screenHeight);
             
             GraphicUtils.DrawBorder(batch, GameObjects.IsBoardSelected(this) ? Color.White : Color.Black, PosX, PosY, SizeX, SizeY, BORDER_SIZE);
-            GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX, PosY, SizeX, SizeY);
+            GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 50), PosX, PosY, SizeX, SizeY);
 
             GraphicUtils.DrawBorder(batch, GameObjects.IsBoardSelected(this) ? Color.White : Color.Black, PosX + SizeX / 2 - BOX_SIZE / 2, PosY + SizeY + 2 * BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE, BORDER_SIZE);
-            GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 75), PosX + SizeX/2 - BOX_SIZE / 2, PosY + SizeY + 2*BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE);
+            GraphicUtils.DrawRectangle(batch, Color.FromNonPremultiplied(155, 180, 225, 50), PosX + SizeX/2 - BOX_SIZE / 2, PosY + SizeY + 2*BORDER_SIZE + DIFFY_NEXT_SHAPE, BOX_SIZE, BOX_SIZE);
 
             // Draw the grid
             if (Config.isGridEnabled) {
@@ -180,8 +180,8 @@ namespace TetrisGame.game {
                         for (j = k - 1; j >= 0; j--) {
                             for (i = 0; i < BlockArray.GetLength(0); i++) {
                                 if (BlockArray[i, j] != null) {
-                                    BlockArray[i, j].Move(0, Block.Size * 2);
-                                    BlockArray[i, j + 2] = BlockArray[i, j];
+                                    BlockArray[i, j].Move(0, Block.Size);
+                                    BlockArray[i, j + 1] = BlockArray[i, j];
                                     BlockArray[i, j] = null;
                                 }
                             }
@@ -189,6 +189,7 @@ namespace TetrisGame.game {
 
                         RemovingRows[k] = 0;
                         RemovingRowProgress[k] = 0;
+                        GameObjects.InfoBar.IncreaseRowsCleared();
                     } else {
                         BlockArray[RemovingRowProgress[k], k - 1] = null;
                         BlockArray[RemovingRowProgress[k]++, k] = null;

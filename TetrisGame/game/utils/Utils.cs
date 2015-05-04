@@ -123,7 +123,7 @@ namespace TetrisGame.game {
         public static Color GetRandomColor() {
             if (colors == null) {
                 colors = new Color[] {
-                    Color.Red, Color.Green, Color.Yellow, Color.Blue, Color.Black
+                    Color.Red, Color.Yellow, Color.Blue, Color.Black
                 };
             }
             return colors[random.Next(colors.Length)];

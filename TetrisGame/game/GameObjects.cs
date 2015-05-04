@@ -25,6 +25,8 @@ namespace TetrisGame {
         public static InfoBar InfoBar { private set; get; }
         
         public static Difficulty Difficulty { private set; get; }
+        public static bool GamePaused { private set; get; }
+        public static ButtonWindow CurrentPauseScreen { private set; get; }
 
         private static Board[] boards;
         public static Board[] Boards {
@@ -52,22 +54,23 @@ namespace TetrisGame {
             GraphicUtils.pixel = new Texture2D(device, 1, 1);
 
 
-            ButtonScreen options = new ButtonScreen();
+            ButtonScreen options = new ButtonScreen(300);
             ButtonScreen difficulty;
             Button[] difficultyButtons = new Button[Enum.GetValues(typeof(Difficulty)).Length];
             int i = 0;
             foreach (Difficulty diff in Enum.GetValues(typeof(Difficulty))) {
                 difficultyButtons[i++] = new DifficultyButton(diff);
             }
-            difficulty = new ButtonScreen(difficultyButtons);
-            ButtonScreen bs = new ButtonScreen(new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
-            bs.Title = "Helooooo!";
+            difficulty = new ButtonScreen(300, difficultyButtons);
+            ButtonScreen bs = new ButtonScreen(300, new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
+            bs.Title = "MULTI \n  TETRIS";
             CurrentButtonScreen = bs;
 
             options.buttons.Add(new BackButton(bs));
             difficulty.buttons.Add(new BackButton(bs));
 
             Difficulty = Difficulty.Normal;
+            GamePaused = false;
             InitBoards();
         }
 
@@ -86,14 +89,45 @@ namespace TetrisGame {
 
         public static void Draw(SpriteBatch batch) {
             if (Game.gameStarted) {
-                // Draw the boards
-                foreach (Board board in Boards)
-                    board.Draw(batch, GraphicsDevice);
+                if (GamePaused) {
+                    CurrentPauseScreen.Draw(batch);
+                } else {
 
-                // Draw InfoBar
-                InfoBar.Draw(batch);
+                    // Draw the boards
+                    foreach (Board board in Boards)
+                        board.Draw(batch, GraphicsDevice);
+
+                    // Draw InfoBar
+                    InfoBar.Draw(batch);
+                }
             } else {
                 CurrentButtonScreen.Draw(batch);
+            }
+        }
+
+        public static void Update() {
+
+            if (GamePaused) {
+                
+            } else {
+                foreach (Board board in Boards) {
+                    board.Update();
+                    if (board.HasLost) {
+                        // TODO: Set up lose condition
+                        board.ResetMap();
+                    }
+                }
+            }
+        }
+
+        public static void OnKeyPressed(KeyboardState keys) {
+            if (Game.gameStarted) {
+                if (GamePaused)
+                    CurrentPauseScreen.OnKeyboardPress(keys);
+                else 
+                    boards[selectedBoard].OnKeyPressed(keys);
+            } else {
+                CurrentButtonScreen.OnKeyboardPress(keys);
             }
         }
 
@@ -122,11 +156,7 @@ namespace TetrisGame {
             return board == boards[selectedBoard];
         }
 
-        public static void OnKeyPressed(KeyboardState keys)
-        {
-            if(!Game.gameStarted)
-                CurrentButtonScreen.OnKeyboardPress(keys);
-        }   
+
         
         public static void SetDifficulty(Difficulty diff) {
             Difficulty = diff;
@@ -136,6 +166,16 @@ namespace TetrisGame {
         public static void StartGame() {
             Game.gameStarted = true;
             InitBoards();
+        }
+
+        public static void PauseGame(ButtonWindow window) {
+            GamePaused = true;
+            CurrentPauseScreen = window;
+        }
+
+        public static void UnpauseGame() {
+            GamePaused = false;
+            CurrentPauseScreen = null;
         }
     }
 

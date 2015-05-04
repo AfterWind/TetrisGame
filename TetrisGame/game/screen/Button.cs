@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TetrisGame.game {
     public abstract class Button {
-        public const int SizeX = 300, SizeY = 40, BorderSize = 5;
+        public const int BorderSize = 5, SizeY = 40;
         public static Color buttonColor = Color.Orange, textColor = Color.Blue;
 
         public string Text { protected set; get; }
@@ -68,6 +68,16 @@ namespace TetrisGame.game {
         public override void OnClicked() {
             GameObjects.SetDifficulty(diff);
             base.OnClicked();
+        }
+    }
+
+    public class GameReturnButton : Button {
+        public GameReturnButton(string text) : base(text) { }
+
+        public override void OnClicked() {
+            if (GameObjects.GamePaused) {
+                GameObjects.UnpauseGame();
+            }
         }
     }
 }

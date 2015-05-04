@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,10 +30,9 @@ namespace TetrisGame.game {
 
         public int Speed {
             get {
-                return Paused ? 0 : INITIAL_SPEED + (GameObjects.InfoBar.Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
+                return INITIAL_SPEED + (GameObjects.InfoBar.Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
             }
         }
-        public bool Paused { set; get; }
 
         private static readonly int BORDER_SIZE = 5;
         private static readonly Color BORDER_COLOR = Color.Black;
@@ -191,7 +191,7 @@ namespace TetrisGame.game {
                         RemovingRowProgress[k] = 0;
                         GameObjects.InfoBar.IncreaseRowsCleared();
                     } else {
-                        BlockArray[RemovingRowProgress[k], k - 1] = null;
+                        //BlockArray[RemovingRowProgress[k], k - 1] = null;
                         BlockArray[RemovingRowProgress[k]++, k] = null;
                     }
                 }
@@ -247,6 +247,35 @@ namespace TetrisGame.game {
 
         public void DebugIncreaseSpeed(int speed) {
             this.SpeedIncreaseDebug += speed;
+        }
+
+        public void OnKeyPressed(KeyboardState keys) {
+            foreach(Keys k in keys.GetPressedKeys()) {
+                if (!GameObjects.Game.WasKeyPressed(k)) {
+                    switch (k) {
+                        case Keys.NumPad2:
+                            if (GameObjects.GetBoard().Speed - 2 > 0) {
+                                GameObjects.GetBoard().DebugIncreaseSpeed(-2);
+                            }
+                            break;
+                        case Keys.NumPad8:
+                            GameObjects.GetBoard().DebugIncreaseSpeed(2);
+                            break;
+                        case Keys.Right:
+                            GameObjects.GetBoard().MoveShape(Block.Size);
+                            break;
+                        case Keys.Left:
+                            GameObjects.GetBoard().MoveShape(-Block.Size);
+                            break;
+                        case Keys.Down:
+                            GameObjects.GetBoard().IncreaseSpeed(GameObjects.GetBoard().Speed);
+                            break;
+                        case Keys.Space:
+                            GameObjects.GetBoard().RotateShape();
+                            break;
+                    }
+                }
+            }
         }
 
         public void PrintMap() {

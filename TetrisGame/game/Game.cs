@@ -64,13 +64,7 @@ namespace TetrisGame {
             sw.Start();
             GetInput();
             if (gameStarted) {
-                foreach (Board board in GameObjects.Boards) {
-                    board.Update();
-                    if (board.HasLost) {
-                        // TODO: Set up lose condition
-                        board.ResetMap();
-                    }
-                }
+                GameObjects.Update();
             }
             
             base.Update(gameTime);
@@ -95,7 +89,12 @@ namespace TetrisGame {
                 foreach (Keys k in currentState.GetPressedKeys()) {
                     switch (k) {
                         case Keys.Escape:
-                            this.Exit();
+                            //this.Exit();
+                            if (gameStarted) {
+                                ButtonWindow buttonWindow = new ButtonWindow(150, new QuitButton("Yes"), new GameReturnButton("No"));
+                                buttonWindow.Title = "Iesi   din   joc?";
+                                GameObjects.PauseGame(buttonWindow);
+                            }
                             break;
                         case Keys.L:
                             GameObjects.GetBoard().PrintMap();
@@ -106,28 +105,10 @@ namespace TetrisGame {
                     }
                     if (!WasKeyPressed(k)) {
                         switch (k) {
-                            case Keys.NumPad2:
-                                if (GameObjects.GetBoard().Speed - 2 > 0) {
-                                    GameObjects.GetBoard().DebugIncreaseSpeed(-2);
-                                }
-                                break;
-                            case Keys.NumPad8:
-                                GameObjects.GetBoard().DebugIncreaseSpeed(2);
-                                break;
-                            case Keys.Right:
-                                GameObjects.GetBoard().MoveShape(Block.Size);
-                                break;
-                            case Keys.Left:
-                                GameObjects.GetBoard().MoveShape(-Block.Size);
-                                break;
-                            case Keys.Down:
-                                GameObjects.GetBoard().IncreaseSpeed(GameObjects.GetBoard().Speed);
-                                break;
-                            case Keys.Space:
-                                GameObjects.GetBoard().RotateShape();
-                                break;
                             case Keys.P:
-                                GameObjects.GetBoard().Paused = GameObjects.GetBoard().Paused ? false : true;
+                                ButtonWindow buttonWindow = new ButtonWindow(150, new GameReturnButton("Return"));
+                                buttonWindow.Title = "Pauza";
+                                GameObjects.PauseGame(buttonWindow);
                                 break;
                             case Keys.D:
                                 GameObjects.SelectNextBoard();

@@ -18,7 +18,7 @@ namespace TetrisGame {
         private BasicEffect basicEffect;
         private KeyboardState oldState;
 
-        private Texture2D background;
+        public Texture2D background, info;
 
         public TetrisGame() {
             graphics = new GraphicsDeviceManager(this);
@@ -48,9 +48,12 @@ namespace TetrisGame {
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            background = this.Content.Load<Texture2D>("bg");
+            info = this.Content.Load<Texture2D>("info");
             GameObjects.Init(Content, GraphicsDevice, this);
             basicEffect = new BasicEffect(GraphicsDevice);
-            background = this.Content.Load<Texture2D>("bg");
+            
+            
             // TODO: use this.Content to load your game content here
         }
 
@@ -91,7 +94,8 @@ namespace TetrisGame {
                         case Keys.Escape:
                             //this.Exit();
                             if (gameStarted && !GameObjects.GamePaused) {
-                                ButtonWindow buttonWindow = new ButtonWindow(150, new TitleReturnButton("Da"), new GameReturnButton("Nu"));
+                                ButtonWindow buttonWindow = new ButtonWindow(150);
+                                buttonWindow.AddButtons(new TitleReturnButton("Da"), new GameReturnButton("Nu"));
                                 buttonWindow.Title = "Iesi   din   joc?";
                                 GameObjects.PauseGame(buttonWindow);
                             }
@@ -106,7 +110,8 @@ namespace TetrisGame {
                     if (!WasKeyPressed(k)) {
                         switch (k) {
                             case Keys.P:
-                                ButtonWindow buttonWindow = new ButtonWindow(150, new GameReturnButton("Intoarcete"));
+                                ButtonWindow buttonWindow = new ButtonWindow(150);
+                                buttonWindow.AddButtons(new GameReturnButton("Intoarcete"));
                                 buttonWindow.Title = "Pauza";
                                 GameObjects.PauseGame(buttonWindow);
                                 break;

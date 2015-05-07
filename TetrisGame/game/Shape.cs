@@ -115,10 +115,6 @@ namespace TetrisGame.game {
                 int newY = block.Y + offY;
                 if (newY < Board.PosY)
                     return false;
-                if (newY + Block.Size > Board.PosY + Board.SizeY) {
-                    Move(0, Board.PosY + Board.SizeY - block.Y - Block.Size);
-                    return false;
-                }
                 Block blockCheck = null;
                 for (int i = 1; i <= Math.Ceiling((double)offY / (double)Block.Size) && blockCheck == null; i++) {
                     try {
@@ -128,6 +124,10 @@ namespace TetrisGame.game {
 
                 if (blockCheck != null) {
                     Move(0, blockCheck.Y - block.Y - Block.Size);
+                    return false;
+                }
+                if (newY + Block.Size > Board.PosY + Board.SizeY) {
+                    Move(0, Board.PosY + Board.SizeY - block.Y - Block.Size);
                     return false;
                 }
             }

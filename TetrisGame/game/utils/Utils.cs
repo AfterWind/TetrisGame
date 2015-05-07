@@ -10,9 +10,47 @@ using System.Threading.Tasks;
 namespace TetrisGame.game {
     public class Utils {
         private static Random random = new Random();
-        private static List<int[]> patterns;
+        public static List<PatternSet> patterns = new List<PatternSet>() {
+            new PatternSet("Set funky", new List<int[]> {
+                new int[] {1, 0, -1, 0, 0, 1, -1, -1, 1, -1},
+                new int[] {0, -1, 0, -2, 0, 1},
+                new int[] {1, 0, -1, 0, 0, 1, 0, -1},
+                new int[] {1, 0, -1, 0, 0, -1},
+                new int[] {0, -1, -1, -1, -1, 0},
+                new int[] {-2, 0, -3, 0, -2, -1, -3, -1, -1, -3, -1, -2, 0, -3, 0, -2, 1, 0, 2, 0, 1, -1, 2, -1, -1, 1, -1, 2, 0, 1, 0, 2, -1, -1, -1, 0, 0, -1}, // lol
+            }),
+            new PatternSet("Set debug", new List<int[]> {
+                //new int[] {-8, 0, -7, 0, -6, 0, -5, 0, -4, 0, -3, 0, -2, 0, -1, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0}
+                new int[] {0, -1, 0, -2, 0, 1},
+            }),
+            new PatternSet("Set classic", new List<int[]> {
+                new int[] {0, -1, -1, -1, -1, 0},
+                new int[] {0, -1, 0, -2, 0, 1},
+                new int[] {-1, 0, 0, 1, 1, 1},
+                new int[] {0, -1, -1, -1, 1, 0},
+                new int[] {0, -1, 0, 1, 1, 0},
+                new int[] {0, -1, 0, -2, -1, 0},
+                new int[] {1, 0, -1, 0, 0, -1},
+            }),
+            new PatternSet("Set expanded", new List<int[]> {
+                new int[] {0, -1, 0, -2, 1, 0, 2, 0},
+				new int[] {-1, 0, -2, 0, -3, 0, 0, 1},
+				new int[] {-2, 0, -1, 0, 1, 0, 2, 0},
+				new int[] {-1, -1, -1, 0, 0, 1, 1, 1},
+				new int[] {-2, 0, -1, 0, 0, 1, 0, -1},
+				new int[] {-2, 0, -1, 0, 0, 1, 1, 1},
+				new int[] {0, -1, 1, 0, 1, 1, 0, 1},
+				new int[] {0, -1, 0, -2, -1, 0, 0, 1},
+				new int[] {0, -1, 1, -1, 0, 1, 1, 1},
+				new int[] {1, 0, -1, 0, 0, 1, 0, -1},
+				new int[] {0, -1, 1, 0, 0, 1, -1, 1},
+				new int[] {-1, -1, 0, -1, 0, 1, 1, 1}
+            })
+        };
         private static Color[] colors;
         private static Dictionary<Color, Texture2D> textures;
+
+        public static int SelectedPattern { set; get; }
 
         public static int[] GetDifferentialParams(List<Block> blocks, Block center) {
             int[] array = new int[(blocks.Count - 1) * 2];
@@ -130,18 +168,7 @@ namespace TetrisGame.game {
         }
 
         public static Shape GetRandomShape(Board board) {
-            if (patterns == null) {
-                patterns = new List<int[]> {
-                    new int[] {1, 0, -1, 0, 0, 1, -1, -1, 1, -1},
-                    new int[] {0, -1, 0, -2, 0, 1},
-                    new int[] {1, 0, -1, 0, 0, 1, 0, -1},
-                    new int[] {1, 0, -1, 0, 0, -1},
-                    new int[] {0, -1, -1, -1, -1, 0},
-                    new int[] {-2, 0, -3, 0, -2, -1, -3, -1, -1, -3, -1, -2, 0, -3, 0, -2, 1, 0, 2, 0, 1, -1, 2, -1, -1, 1, -1, 2, 0, 1, 0, 2, -1, -1, -1, 0, 0, -1}, // lol
-                    //new int[] {-8, 0, -7, 0, -6, 0, -5, 0, -4, 0, -3, 0, -2, 0, -1, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0}
-                };
-            }
-            return new Shape(board, patterns[random.Next(0, patterns.Count)]);
+            return new Shape(board, patterns[SelectedPattern].Pattern[random.Next(0, patterns[SelectedPattern].Pattern.Count)]);
         }
 
         public static Texture2D GetTextureForColor(Color color) {
@@ -152,6 +179,16 @@ namespace TetrisGame.game {
                 }
             }
             return textures[color];
+        }
+    }
+
+    public class PatternSet {
+        public string Name { set; get; }
+        public List<int[]> Pattern { set; get; }
+
+        public PatternSet(string name, List<int[]> pattern) {
+            this.Name = name;
+            this.Pattern = pattern;
         }
     }
 }

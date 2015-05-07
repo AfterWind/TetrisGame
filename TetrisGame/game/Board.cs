@@ -29,7 +29,7 @@ namespace TetrisGame.game {
 
         public int Speed {
             get {
-                return INITIAL_SPEED + (GameObjects.InfoBar.Level / 3) + SpeedIncrease + SpeedIncreaseDebug;
+                return (GameObjects.InfoBar.Level / 3 + 1) * InitialSpeed + SpeedIncrease + SpeedIncreaseDebug;
             }
         }
 
@@ -41,7 +41,7 @@ namespace TetrisGame.game {
         private static readonly int DIFFY_NEXT_SHAPE = 30;
         private static readonly int BOX_SIZE = 150;
 
-        private static readonly int INITIAL_SPEED = 1;
+        private int InitialSpeed;
 
         private Shape movingShape;
         private Shape nextShape;
@@ -51,7 +51,7 @@ namespace TetrisGame.game {
         private int[] RemovingRowProgress;
         private bool CurrentlyRemovingRows = false;
 
-        public Board(int posX, int posY, int columns, int rows) {
+        public Board(int posX, int posY, int columns, int rows, int initialSpeed) {
             BlockArray = new Block[columns, rows];
             this.SizeX = columns * Block.Size;
             this.SizeY = rows * Block.Size;
@@ -63,6 +63,7 @@ namespace TetrisGame.game {
             this.Columns = columns;
             this.BoxX = posX + SizeX / 2 - BOX_SIZE / 2;
             this.BoxY = posY + SizeY + DIFFY_NEXT_SHAPE + 2 * BORDER_SIZE;
+            this.InitialSpeed = initialSpeed;
         }
 
         public void AddShape(Shape shape) {
@@ -213,27 +214,7 @@ namespace TetrisGame.game {
             if (movingShape != null)
                 movingShape.Rotate();
         }
-        /*
-        public void RemoveRow(int row) {
-            for (int j = row; j >= 0; j--) {
-                for (int i = 0; i < BlockArray.GetLength(0); i++) {
-                    if (row == j) {
-                        // TODO: Implement a block deleting method
-                        BlockArray[i, j] = null;
-
-                    } else if (BlockArray[i, j] != null) {
-                        
-                        // TODO: Better block movement
-                        BlockArray[i, j].Move(0, Block.Size);
-                        BlockArray[i, j + 1] = BlockArray[i, j];
-                        BlockArray[i, j] = null;
-                    }
-                }
-            }
-            
-        }
-         * */
-        
+   
         public void ResetMap() {
             BlockArray = new Block[SizeX / Block.Size, SizeY / Block.Size];
             movingShape = nextShape = null;

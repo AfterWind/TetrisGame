@@ -11,10 +11,8 @@ using TetrisGame.game;
 
 namespace TetrisGame {
     public class GameObjects {
-
         
         public static readonly int DISTANCE_BETWEEN_BOARDS = 20;
-        public static readonly int ROWS = 20, COLUMNS = 16;
         public static readonly int BOARDS_STARTY = 60;
 
         public static TetrisGame Game { private set; get; }
@@ -24,7 +22,8 @@ namespace TetrisGame {
         public static ButtonScreen TitleScreen { private set; get; }
         public static ButtonScreen CurrentButtonScreen { set; get; }
         public static InfoBar InfoBar { private set; get; }
-        
+        public static BoardSize BoardSize { set; get; }
+
         public static Difficulty Difficulty { private set; get; }
         public static bool GamePaused { private set; get; }
         public static bool HasLost { set; get; }
@@ -55,39 +54,45 @@ namespace TetrisGame {
             GraphicUtils.fontTitle = content.Load<SpriteFont>("LargeClassic");
             GraphicUtils.pixel = new Texture2D(device, 1, 1);
 
-
             ButtonScreen options = new ButtonScreen(300);
-            ButtonScreen difficulty;
+            options.Title = "Optiuni";
+            options.AddButtons(new PatternSelectButton(Utils.patterns.ToArray()), new BoardSizeSelectButton(new BoardSize(20, 16), new BoardSize(10, 16), new BoardSize(25, 16), new BoardSize(20, 8), new BoardSize(20, 12)));
+            ButtonScreen info = new ImageScreen(300, Game.info);
+            ButtonScreen difficulty = new ButtonScreen(300);
+            difficulty.Title = "Dificultate";
             Button[] difficultyButtons = new Button[Enum.GetValues(typeof(Difficulty)).Length];
             int i = 0;
             foreach (Difficulty diff in Enum.GetValues(typeof(Difficulty))) {
                 difficultyButtons[i++] = new DifficultyButton(diff);
             }
-            difficulty = new ButtonScreen(300, difficultyButtons);
-            ButtonScreen title = new ButtonScreen(300, new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
+            difficulty.AddButtons(difficultyButtons);
+            ButtonScreen title = new ButtonScreen(300);
+            title.AddButtons(new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new AdvanceButton("Info", info), new QuitButton("Iesire"));
             title.Title = "MULTI-TETRIS";
             CurrentButtonScreen = title;
             TitleScreen = title;
 
-            options.buttons.Add(new BackButton(title));
-            difficulty.buttons.Add(new BackButton(title));
+            //options.buttons.Add(new BackButtonZ(title));
+            //difficulty.buttons.Add(new BackButton(title));
+            //patterns.buttons.Add(new BackButton(options));
 
             Difficulty = Difficulty.Normal;
             GamePaused = false;
-            InitBoards();
+            BoardSize = new BoardSize(20, 16);
+            //InitBoards();
         }
 
         public static void InitBoards() {
             int nrBoards = Difficulty.GetNumberOfBoards();
             boards = new Board[nrBoards];
             for (int i = 0; i < nrBoards; i++)
-                boards[i] = new Board(GetStartX() + i * (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY, COLUMNS, ROWS);
-            InfoBar = new InfoBar(GetStartX() + nrBoards * (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY);
+                boards[i] = new Board(GetStartX() + i * (BoardSize.columns * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY, BoardSize.columns, BoardSize.rows, Difficulty.GetInitialSpeed());
+            InfoBar = new InfoBar(GetStartX() + nrBoards * (BoardSize.columns * Block.Size + DISTANCE_BETWEEN_BOARDS), BOARDS_STARTY);
         }
 
         public static int GetStartX() {
             int nrBoards = Difficulty.GetNumberOfBoards();
-            return (GraphicUtils.screenWidth - InfoBar.INFO_BAR_SIZE - (COLUMNS * Block.Size + DISTANCE_BETWEEN_BOARDS) * nrBoards) / 2;
+            return (GraphicUtils.screenWidth - InfoBar.INFO_BAR_SIZE - (BoardSize.columns * Block.Size + DISTANCE_BETWEEN_BOARDS) * nrBoards) / 2;
         }
 
         public static void Draw(SpriteBatch batch) {
@@ -120,7 +125,8 @@ namespace TetrisGame {
                         board.ResetMap();
                     }
                     InfoBar.Reset();
-                    ButtonWindow bw = new ButtonWindow(150, new GameReturnButton("DA"), new TitleReturnButton("NU"));
+                    ButtonWindow bw = new ButtonWindow(150);
+                    bw.AddButtons(new GameReturnButton("DA"), new TitleReturnButton("NU"));
                     bw.Title = "Vrei   sa   continui?";
                     PauseGame(bw);
                     HasLost = false;
@@ -193,6 +199,7 @@ namespace TetrisGame {
         Normal,
         DoubleTime,
         Challenge,
+        Advanced,
         Quadra,
         INFINITE
     }
@@ -206,6 +213,8 @@ namespace TetrisGame {
                     return 1;
                 case Difficulty.Challenge:
                     return 2;
+                case Difficulty.Advanced:
+                    return 2;
                 case Difficulty.Quadra:
                     return 4;
                 case Difficulty.INFINITE:
@@ -217,6 +226,34 @@ namespace TetrisGame {
 
         public static string GetText(this Difficulty diff) {
             return diff.ToString();
-        } 
+        }
+
+        public static int GetInitialSpeed(this Difficulty diff) {
+            switch (diff) {
+                case Difficulty.Normal:
+                    return 1;
+                case Difficulty.DoubleTime:
+                    return 2;
+                case Difficulty.Challenge:
+                    return 1;
+                case Difficulty.Advanced:
+                    return 2;
+                case Difficulty.Quadra:
+                    return 1;
+                case Difficulty.INFINITE:
+                    return 2;
+                default:
+                    return 1;
+            }
+        }
+    }
+
+    public class BoardSize {
+        public int rows, columns;
+
+        public BoardSize(int rows, int columns) {
+            this.rows = rows;
+            this.columns = columns;
+        }
     }
 }

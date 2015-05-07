@@ -100,6 +100,9 @@
     <Content Include="Content\Block.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\info.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="SDL.dll" />
   </ItemGroup>
   <ItemGroup />

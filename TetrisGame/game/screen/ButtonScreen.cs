@@ -17,17 +17,25 @@ namespace TetrisGame.game {
         public int ButtonSizeX;
         public int ButtonsPosStartX, ButtonsPosStartY;
 
-        public List<Button> buttons = new List<Button>();
+        protected List<Button> buttons = new List<Button>();
         public string Title { set; get; }
-        
+        public ButtonScreen Parent { private set; get; }
         protected int selected = 0;
 
-        public ButtonScreen(int buttonSizeX, params Button[] buttons) {
-            this.buttons.AddRange(buttons);
+        public ButtonScreen(int buttonSizeX) {
             ButtonSizeX = buttonSizeX;
             ButtonsPosStartX = (GraphicUtils.screenWidth - ButtonSizeX) / 2;
             ButtonsPosStartY = 280;
             MAX_TEXT_SIZE = ButtonSizeX + BACKGROUND_STRIP_OFFX * 2 - 50;
+        }
+
+        public virtual void AddButtons(params Button[] buttons) {
+            this.buttons.AddRange(buttons);
+            foreach (Button b in buttons) {
+                if (b is BackButton)
+                    Parent = ((BackButton)b).PrevScreen;
+                b.SetOwner(this);
+            }
         }
 
         public virtual void Draw(SpriteBatch batch) {
@@ -39,25 +47,7 @@ namespace TetrisGame.game {
                 batch.End();
             }
             for (int i = 0; i < buttons.Count; i++) {
-                int x = ButtonsPosStartX, y = ButtonsPosStartY + i * (Button.SizeY + Distance);
-                Vector2 textPos = GraphicUtils.fontCommon.MeasureString(buttons[i].Text);
-                //Console.WriteLine("Text size: " + textPos);
-
-                if (i == selected)
-                    buttons[i].BorderColor = Color.White;
-                else
-                    buttons[i].BorderColor = Color.Black;
-
-                textPos.X = ButtonSizeX / 2 - textPos.X / 2 + x;
-                textPos.Y = Button.SizeY / 2 - textPos.Y / 2 + y + 2;
-                //Console.WriteLine("Text position: " + textPos);
-                //Console.WriteLine("Button size: " + Button.SizeX + ", " + Button.SizeY);
-                
-                GraphicUtils.DrawRectangle(batch, Button.buttonColor, x, y, ButtonSizeX, Button.SizeY);
-                GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, ButtonSizeX, Button.SizeY, Button.BorderSize);
-                batch.Begin();
-                batch.DrawString(GraphicUtils.fontCommon, buttons[i].Text, textPos, Button.textColor);
-                batch.End();
+                buttons[i].Draw(batch, ButtonsPosStartX, ButtonsPosStartY + i * (Button.SizeY + Distance), i == selected);
             }
         }
 
@@ -80,11 +70,8 @@ namespace TetrisGame.game {
                                 selected--;
                             buttons[selected].BorderColor = Color.White;
                             break;
-                        case Keys.Enter:
-                            buttons[selected].OnClicked();
-                            break;
-                        case Keys.Space:
-                            buttons[selected].OnClicked();
+                        default:
+                            buttons[selected].OnClicked(k);
                             break;
                     }
                 }
@@ -93,11 +80,15 @@ namespace TetrisGame.game {
     }
 
     public class ButtonWindow : ButtonScreen {
-        public ButtonWindow(int buttonSizeX, params Button[] buttons) : base(buttonSizeX, buttons) {
+        public ButtonWindow(int buttonSizeX) : base(buttonSizeX) {
             Distance = 80;
-            ButtonsPosStartX = (GraphicUtils.screenWidth - buttons.Count() * ButtonSizeX - (buttons.Count() - 1) * Distance) / 2;
             ButtonsPosStartY = 360;
             //MAX_TEXT_SIZE = 400;
+        }
+
+        public override void AddButtons(params Button[] buttons) {
+            base.AddButtons(buttons);
+            ButtonsPosStartX = (GraphicUtils.screenWidth - buttons.Count() * ButtonSizeX - (buttons.Count() - 1) * Distance) / 2;
         }
 
         public override void Draw(SpriteBatch batch) {
@@ -109,24 +100,7 @@ namespace TetrisGame.game {
                 batch.End();
             }
             for (int i = 0; i < buttons.Count; i++) {
-                int x = ButtonsPosStartX + i * (ButtonSizeX + Distance), y = ButtonsPosStartY;
-                Vector2 textPos = GraphicUtils.fontCommon.MeasureString(buttons[i].Text);
-
-                if (i == selected)
-                    buttons[i].BorderColor = Color.White;
-                else
-                    buttons[i].BorderColor = Color.Black;
-
-                textPos.X = ButtonSizeX / 2 - textPos.X / 2 + x;
-                textPos.Y = Button.SizeY / 2 - textPos.Y / 2 + y + 2;
-                //Console.WriteLine("Text position: " + textPos);
-                //Console.WriteLine("Button size: " + Button.SizeX + ", " + Button.SizeY);
-
-                GraphicUtils.DrawRectangle(batch, Button.buttonColor, x, y, ButtonSizeX, Button.SizeY);
-                GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, ButtonSizeX, Button.SizeY, Button.BorderSize);
-                batch.Begin();
-                batch.DrawString(GraphicUtils.fontCommon, buttons[i].Text, textPos, Button.textColor);
-                batch.End();
+                buttons[i].Draw(batch, ButtonsPosStartX + i * (ButtonSizeX + Distance), ButtonsPosStartY, i == selected);
             }
         }
         
@@ -146,15 +120,33 @@ namespace TetrisGame.game {
                                 selected--;
                             buttons[selected].BorderColor = Color.White;
                             break;
-                        case Keys.Enter:
-                            buttons[selected].OnClicked();
-                            break;
-                        case Keys.Space:
-                            buttons[selected].OnClicked();
+                        default:
+                            buttons[selected].OnClicked(k);
                             break;
                     }
                 }
             }
+        }
+    }
+
+    public class ImageScreen : ButtonScreen {
+        public Texture2D tex;
+
+        public ImageScreen(int buttonSizeX, Texture2D tex) : base(buttonSizeX) {
+            ButtonSizeX = buttonSizeX;
+            ButtonsPosStartX = (GraphicUtils.screenWidth - ButtonSizeX) / 2;
+            ButtonsPosStartY = GraphicUtils.screenHeight - 100;
+            this.tex = tex;
+        }
+
+        public override void Draw(SpriteBatch batch) {
+            //GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, ButtonsPosStartX - BACKGROUND_STRIP_OFFX, 0, ButtonSizeX + BACKGROUND_STRIP_OFFX * 2, GraphicUtils.screenHeight);
+            batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            batch.Draw(tex, new Rectangle(0, 0, GraphicUtils.screenWidth, GraphicUtils.screenHeight), Color.White);
+            batch.End();
+            for (int i = 0; i < buttons.Count; i++) {
+                buttons[i].Draw(batch, ButtonsPosStartX, ButtonsPosStartY + i * (Button.SizeY + Distance), i == selected);
+           }
         }
     }
 }

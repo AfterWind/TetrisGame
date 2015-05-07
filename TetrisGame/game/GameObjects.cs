@@ -27,6 +27,7 @@ namespace TetrisGame {
         
         public static Difficulty Difficulty { private set; get; }
         public static bool GamePaused { private set; get; }
+        public static bool HasLost { set; get; }
         public static ButtonWindow CurrentPauseScreen { private set; get; }
 
         private static Board[] boards;
@@ -63,13 +64,13 @@ namespace TetrisGame {
                 difficultyButtons[i++] = new DifficultyButton(diff);
             }
             difficulty = new ButtonScreen(300, difficultyButtons);
-            ButtonScreen bs = new ButtonScreen(300, new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
-            bs.Title = "MULTI \n  TETRIS";
-            CurrentButtonScreen = bs;
-            TitleScreen = bs;
+            ButtonScreen title = new ButtonScreen(300, new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
+            title.Title = "MULTI-TETRIS";
+            CurrentButtonScreen = title;
+            TitleScreen = title;
 
-            options.buttons.Add(new BackButton(bs));
-            difficulty.buttons.Add(new BackButton(bs));
+            options.buttons.Add(new BackButton(title));
+            difficulty.buttons.Add(new BackButton(title));
 
             Difficulty = Difficulty.Normal;
             GamePaused = false;
@@ -108,16 +109,21 @@ namespace TetrisGame {
         }
 
         public static void Update() {
-
             if (GamePaused) {
                 
             } else {
                 foreach (Board board in Boards) {
                     board.Update();
-                    if (board.HasLost) {
-                        // TODO: Set up lose condition
+                }
+                if (HasLost) {
+                    foreach (Board board in Boards) {
                         board.ResetMap();
                     }
+                    InfoBar.Reset();
+                    ButtonWindow bw = new ButtonWindow(150, new GameReturnButton("DA"), new TitleReturnButton("NU"));
+                    bw.Title = "Vrei   sa   continui?";
+                    PauseGame(bw);
+                    HasLost = false;
                 }
             }
         }

@@ -21,9 +21,7 @@ namespace TetrisGame.game {
         public InfoBar(int posX, int posY) {
             PosX = posX;
             PosY = posY;
-            Score = 0;
-            Level = 1;
-            RowsCleared = 0;
+            Reset();
         }
 
         public void IncreaseRowsCleared() {
@@ -33,22 +31,42 @@ namespace TetrisGame.game {
                 Level++;
         }
 
+        public void Reset() {
+            Score = 0;
+            Level = 1;
+            RowsCleared = 0;
+        }
+
         public void Draw(SpriteBatch batch) {
             GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, PosX, 0, INFO_BAR_SIZE, GraphicUtils.screenHeight);
 
-            Vector2 scorePos = GraphicUtils.fontCommon.MeasureString("SCORE");
+            Vector2 scorePos = GraphicUtils.fontCommon.MeasureString("SCOR");
             scorePos.X = (INFO_BAR_SIZE - scorePos.X) / 2 + PosX;
             scorePos.Y = 50 + PosY;
 
             Vector2 scorePointsPos = GraphicUtils.fontCommon.MeasureString(Score.ToString());
             scorePointsPos.X = (INFO_BAR_SIZE - scorePointsPos.X) / 2 + PosX;
             scorePointsPos.Y = 70 + PosY;
+
+            Vector2 levelPos = GraphicUtils.fontCommon.MeasureString("NIVELUL");
+            levelPos.X = (INFO_BAR_SIZE - levelPos.X) / 2 + PosX;
+            levelPos.Y = 170 + PosY;
+
+            Vector2 levelPointsPos = GraphicUtils.fontCommon.MeasureString(Level.ToString());
+            levelPointsPos.X = (INFO_BAR_SIZE - levelPointsPos.X) / 2 + PosX;
+            levelPointsPos.Y = 198 + PosY;
+
+            GraphicUtils.DrawRectangle(batch, Color.DarkRed, PosX, 200 + PosY, (RowsCleared % 5) * (INFO_BAR_SIZE / 5), 20);
+            GraphicUtils.DrawBorder(batch, Color.White, PosX + 3, 200 + PosY, INFO_BAR_SIZE - 6, 20, 3);
             
             batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            batch.DrawString(GraphicUtils.fontCommon, "SCORE", scorePos, Color.White);
+            batch.DrawString(GraphicUtils.fontCommon, "SCOR", scorePos, Color.White);
             batch.DrawString(GraphicUtils.fontCommon, Score.ToString(), scorePointsPos, Color.White);
+            batch.DrawString(GraphicUtils.fontCommon, "NIVELUL", levelPos, Color.White);
+            batch.DrawString(GraphicUtils.fontCommon, Level.ToString(), levelPointsPos, Color.White);
             batch.End();
-        }
 
+            
+        }
     }
 }

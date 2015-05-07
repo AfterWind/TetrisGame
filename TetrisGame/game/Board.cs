@@ -26,7 +26,6 @@ namespace TetrisGame.game {
         public Block[,] BlockArray { private set; get; }
         public int Rows { private set; get; }
         public int Columns { private set; get; }
-        public bool HasLost { private set; get; }
 
         public int Speed {
             get {
@@ -42,7 +41,7 @@ namespace TetrisGame.game {
         private static readonly int DIFFY_NEXT_SHAPE = 30;
         private static readonly int BOX_SIZE = 150;
 
-        private static readonly int INITIAL_SPEED = 3;
+        private static readonly int INITIAL_SPEED = 1;
 
         private Shape movingShape;
         private Shape nextShape;
@@ -159,7 +158,7 @@ namespace TetrisGame.game {
             // Verify if there are blocks in the first row, if so player loses
             for (i = 0; i < BlockArray.GetLength(0); i++) {
                 if (BlockArray[i, 0] != null)
-                    HasLost = true;
+                    GameObjects.HasLost = true;
             }
 
             // Verify if a row has been filled
@@ -237,8 +236,7 @@ namespace TetrisGame.game {
         
         public void ResetMap() {
             BlockArray = new Block[SizeX / Block.Size, SizeY / Block.Size];
-            HasLost = false;
-            Console.WriteLine("Resetting map.");
+            movingShape = nextShape = null;
         }
 
         public void IncreaseSpeed(int speed) {
@@ -254,24 +252,25 @@ namespace TetrisGame.game {
                 if (!GameObjects.Game.WasKeyPressed(k)) {
                     switch (k) {
                         case Keys.NumPad2:
-                            if (GameObjects.GetBoard().Speed - 2 > 0) {
-                                GameObjects.GetBoard().DebugIncreaseSpeed(-2);
+                            if (Speed - 2 > 0) {
+                                DebugIncreaseSpeed(-2);
                             }
                             break;
                         case Keys.NumPad8:
-                            GameObjects.GetBoard().DebugIncreaseSpeed(2);
+                            DebugIncreaseSpeed(2);
                             break;
                         case Keys.Right:
-                            GameObjects.GetBoard().MoveShape(Block.Size);
+                            MoveShape(Block.Size);
                             break;
                         case Keys.Left:
-                            GameObjects.GetBoard().MoveShape(-Block.Size);
+                            MoveShape(-Block.Size);
                             break;
                         case Keys.Down:
-                            GameObjects.GetBoard().IncreaseSpeed(GameObjects.GetBoard().Speed);
+                            if(SpeedIncrease == 0)
+                                IncreaseSpeed(12);
                             break;
                         case Keys.Space:
-                            GameObjects.GetBoard().RotateShape();
+                            RotateShape();
                             break;
                     }
                 }

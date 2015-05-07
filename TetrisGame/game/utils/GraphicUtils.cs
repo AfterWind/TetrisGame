@@ -31,12 +31,5 @@ namespace TetrisGame.game {
             batch.Draw(pixel, new Rectangle(posX, posY, sizeX, sizeY), Color.White);
             batch.End();
         }
-        /*
-        public static void DrawString(SpriteBatch batch, Color color, Vector2 pos, string text) {
-            batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            batch.DrawString(fontCommon, text, pos, color);
-            batch.End();
-        }
-         * */
     }
 }

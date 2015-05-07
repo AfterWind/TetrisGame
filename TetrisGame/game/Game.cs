@@ -90,8 +90,8 @@ namespace TetrisGame {
                     switch (k) {
                         case Keys.Escape:
                             //this.Exit();
-                            if (gameStarted) {
-                                ButtonWindow buttonWindow = new ButtonWindow(150, new TitleReturnButton("Yes"), new GameReturnButton("No"));
+                            if (gameStarted && !GameObjects.GamePaused) {
+                                ButtonWindow buttonWindow = new ButtonWindow(150, new TitleReturnButton("Da"), new GameReturnButton("Nu"));
                                 buttonWindow.Title = "Iesi   din   joc?";
                                 GameObjects.PauseGame(buttonWindow);
                             }

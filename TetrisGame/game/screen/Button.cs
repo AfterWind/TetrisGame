@@ -80,4 +80,14 @@ namespace TetrisGame.game {
             }
         }
     }
+
+    public class TitleReturnButton : Button {
+        public TitleReturnButton(string text) : base(text) { }
+
+        public override void OnClicked() {
+            GameObjects.Game.gameStarted = false;
+            GameObjects.CurrentButtonScreen = GameObjects.TitleScreen;
+            GameObjects.UnpauseGame();
+        }
+    }
 }

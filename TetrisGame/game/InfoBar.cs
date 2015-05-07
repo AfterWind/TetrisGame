@@ -35,14 +35,19 @@ namespace TetrisGame.game {
 
         public void Draw(SpriteBatch batch) {
             GraphicUtils.DrawRectangle(batch, GraphicUtils.BACKGROUND_STRIP, PosX, 0, INFO_BAR_SIZE, GraphicUtils.screenHeight);
-            Vector2 textPos = GraphicUtils.fontCommon.MeasureString("SCORE");
-            textPos.X = (INFO_BAR_SIZE - textPos.X) / 2 + PosX;
-            textPos.Y =  50 + PosY;
-            GraphicUtils.DrawString(batch, Color.White, textPos, "SCORE");
-            textPos = GraphicUtils.fontCommon.MeasureString(Score.ToString());
-            textPos.X = (INFO_BAR_SIZE - textPos.X) / 2 + PosX;
-            textPos.Y = 70 + PosY;
-            GraphicUtils.DrawString(batch, Color.White, textPos, Score.ToString());
+
+            Vector2 scorePos = GraphicUtils.fontCommon.MeasureString("SCORE");
+            scorePos.X = (INFO_BAR_SIZE - scorePos.X) / 2 + PosX;
+            scorePos.Y = 50 + PosY;
+
+            Vector2 scorePointsPos = GraphicUtils.fontCommon.MeasureString(Score.ToString());
+            scorePointsPos.X = (INFO_BAR_SIZE - scorePointsPos.X) / 2 + PosX;
+            scorePointsPos.Y = 70 + PosY;
+            
+            batch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            batch.DrawString(GraphicUtils.fontCommon, "SCORE", scorePos, Color.White);
+            batch.DrawString(GraphicUtils.fontCommon, Score.ToString(), scorePointsPos, Color.White);
+            batch.End();
         }
 
     }

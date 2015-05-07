@@ -21,6 +21,7 @@ namespace TetrisGame {
         public static Color FromColor { private set; get; }
         public static ContentManager Content { private set; get; }
         public static GraphicsDevice GraphicsDevice { private set; get; }
+        public static ButtonScreen TitleScreen { private set; get; }
         public static ButtonScreen CurrentButtonScreen { set; get; }
         public static InfoBar InfoBar { private set; get; }
         
@@ -65,6 +66,7 @@ namespace TetrisGame {
             ButtonScreen bs = new ButtonScreen(300, new AdvanceButton("Incepe joc", difficulty), new AdvanceButton("Optiuni", options), new QuitButton("Exit"));
             bs.Title = "MULTI \n  TETRIS";
             CurrentButtonScreen = bs;
+            TitleScreen = bs;
 
             options.buttons.Add(new BackButton(bs));
             difficulty.buttons.Add(new BackButton(bs));

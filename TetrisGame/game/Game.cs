@@ -91,7 +91,7 @@ namespace TetrisGame {
                         case Keys.Escape:
                             //this.Exit();
                             if (gameStarted) {
-                                ButtonWindow buttonWindow = new ButtonWindow(150, new QuitButton("Yes"), new GameReturnButton("No"));
+                                ButtonWindow buttonWindow = new ButtonWindow(150, new TitleReturnButton("Yes"), new GameReturnButton("No"));
                                 buttonWindow.Title = "Iesi   din   joc?";
                                 GameObjects.PauseGame(buttonWindow);
                             }
@@ -106,7 +106,7 @@ namespace TetrisGame {
                     if (!WasKeyPressed(k)) {
                         switch (k) {
                             case Keys.P:
-                                ButtonWindow buttonWindow = new ButtonWindow(150, new GameReturnButton("Return"));
+                                ButtonWindow buttonWindow = new ButtonWindow(150, new GameReturnButton("Intoarcete"));
                                 buttonWindow.Title = "Pauza";
                                 GameObjects.PauseGame(buttonWindow);
                                 break;

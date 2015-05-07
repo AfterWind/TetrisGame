@@ -55,7 +55,9 @@ namespace TetrisGame.game {
                 
                 GraphicUtils.DrawRectangle(batch, Button.buttonColor, x, y, ButtonSizeX, Button.SizeY);
                 GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, ButtonSizeX, Button.SizeY, Button.BorderSize);
-                GraphicUtils.DrawString(batch, Button.textColor, textPos, buttons[i].Text);
+                batch.Begin();
+                batch.DrawString(GraphicUtils.fontCommon, buttons[i].Text, textPos, Button.textColor);
+                batch.End();
             }
         }
 
@@ -122,7 +124,9 @@ namespace TetrisGame.game {
 
                 GraphicUtils.DrawRectangle(batch, Button.buttonColor, x, y, ButtonSizeX, Button.SizeY);
                 GraphicUtils.DrawBorder(batch, buttons[i].BorderColor, x, y, ButtonSizeX, Button.SizeY, Button.BorderSize);
-                GraphicUtils.DrawString(batch, Button.textColor, textPos, buttons[i].Text);
+                batch.Begin();
+                batch.DrawString(GraphicUtils.fontCommon, buttons[i].Text, textPos, Button.textColor);
+                batch.End();
             }
         }
         

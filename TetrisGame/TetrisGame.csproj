@@ -67,6 +67,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Content\Atestat.docx" />
     <None Include="Content\CourierNew.spritefont">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

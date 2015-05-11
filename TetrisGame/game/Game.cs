@@ -73,9 +73,9 @@ namespace TetrisGame {
             base.Update(gameTime);
             
             sw.Stop();
-            Console.WriteLine("Finished tick with " + sw.ElapsedMilliseconds);
-            if(sw.ElapsedMilliseconds > 17)
-                Console.WriteLine("Breakpoint.");
+            //Console.WriteLine("Finished tick with " + sw.ElapsedMilliseconds);
+            //if(sw.ElapsedMilliseconds > 17)
+                //Console.WriteLine("Breakpoint.");
         }
 
         public bool WasKeyPressed(Keys key) {
@@ -170,7 +170,7 @@ namespace TetrisGame {
                 base.Draw(gameTime);
             }
             sw.Stop();
-            Console.WriteLine("Finished drawing with " + sw.ElapsedMilliseconds);
+            //Console.WriteLine("Finished drawing with " + sw.ElapsedMilliseconds);
 
         }
     }

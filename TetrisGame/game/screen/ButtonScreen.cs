@@ -70,6 +70,10 @@ namespace TetrisGame.game {
                                 selected--;
                             buttons[selected].BorderColor = Color.White;
                             break;
+                        case Keys.Escape:
+                            if(Parent != null)
+                                GameObjects.CurrentButtonScreen = Parent;
+                            break;
                         default:
                             buttons[selected].OnClicked(k);
                             break;

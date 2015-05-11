@@ -127,7 +127,7 @@ namespace TetrisGame {
                     InfoBar.Reset();
                     ButtonWindow bw = new ButtonWindow(150);
                     bw.AddButtons(new GameReturnButton("DA"), new TitleReturnButton("NU"));
-                    bw.Title = "Vrei   sa   continui?";
+                    bw.Title = "                   Ai   pierdut! \n    Vrei   sa   mai   joci?";
                     PauseGame(bw);
                     HasLost = false;
                 }
@@ -169,11 +169,10 @@ namespace TetrisGame {
         public static bool IsBoardSelected(Board board) {
             return board == boards[selectedBoard];
         }
-
-
         
         public static void SetDifficulty(Difficulty diff) {
             Difficulty = diff;
+            InitBoards();
         }
 
         
